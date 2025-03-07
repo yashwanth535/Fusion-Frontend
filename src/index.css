@@ -1,0 +1,160 @@
+@import url("https://fonts.googleapis.com/css2?family=Work+Sans:ital,wght@0,100..900;1,100..900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --radius: 0.5rem;
+    --transition-speed: 0.3s;
+  }
+  
+  body {
+    @apply font-work-sans text-black bg-white-100;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer utilities {
+  /* Layout Utilities */
+  .flex-between {
+    @apply flex justify-between items-center;
+  }
+  
+  .flex-center {
+    @apply flex justify-center items-center;
+  }
+  
+  /* Typography */
+  .text-30-extrabold {
+    @apply text-[30px] font-extrabold text-white leading-tight;
+  }
+
+  .text-30-bold {
+    @apply text-[30px] font-bold text-black leading-tight;
+  }
+
+  .text-24-black {
+    @apply text-[24px] font-black text-black leading-snug;
+  }
+
+  .text-20-medium {
+    @apply font-medium text-[20px] text-black leading-relaxed;
+  }
+
+  .text-16-medium {
+    @apply font-medium text-[16px] text-black leading-relaxed;
+  }
+
+  /* Containers */
+  .pink_container {
+    @apply w-full bg-primary bg-opacity-95 min-h-[530px] pattern flex justify-center items-center flex-col py-12 px-8 backdrop-blur-sm;
+  }
+
+  .section_container {
+    @apply px-8 py-16 max-w-7xl mx-auto;
+  }
+
+  /* Headings */
+  .heading {
+    @apply uppercase bg-black px-6 py-4 font-work-sans font-extrabold text-white sm:text-[54px] sm:leading-[64px] text-[36px] leading-[46px] max-w-5xl text-center my-6 shadow-xl;
+  }
+
+  .sub-heading {
+    @apply font-medium text-[20px] text-white max-w-2xl text-center break-words leading-relaxed;
+  }
+
+  /* Cards */
+  .card_grid {
+    @apply grid md:grid-cols-3 sm:grid-cols-2 gap-8;
+  }
+
+  .startup-card {
+    @apply bg-white border-[5px] border-black py-6 px-5 rounded-[22px] shadow-lg 
+           hover:border-primary transition-all duration-300 hover:shadow-xl hover:bg-primary-100 
+           hover:translate-y-[-5px];
+  }
+
+  .startup-card_desc {
+    @apply font-normal text-[16px] line-clamp-2 my-3 text-black-100 break-all leading-relaxed;
+  }
+
+  .startup-card_img {
+    @apply w-full h-[164px] rounded-[10px] object-cover shadow-md hover:shadow-lg transition-all duration-300;
+  }
+
+  .startup-card_btn {
+    @apply rounded-full bg-black-200 font-medium text-[16px] text-white px-5 py-3 hover:bg-primary 
+           hover:text-black transition-colors duration-300 shadow-md !important;
+  }
+
+  /* Pattern */
+  .pattern {
+    background-image: linear-gradient(
+      to right,
+      transparent 49.5%,
+      rgba(251, 232, 67, 0.3) 49.5%,
+      rgba(251, 232, 67, 0.7) 50.5%,
+      transparent 50.5%
+    );
+    background-size: 5% 100%;
+    background-position: center;
+    background-repeat: repeat-x;
+  }
+
+  /* Form Styles */
+  .startup-form {
+    @apply bg-white border-[5px] border-black rounded-[22px] p-8 shadow-lg 
+           transition-all duration-300;
+  }
+
+  .startup-form_label {
+    @apply block text-16-medium mb-2 font-semibold;
+  }
+
+  .startup-form_input {
+    @apply w-full px-4 py-3 border-[3px] border-black rounded-xl 
+           focus:border-primary focus:ring-2 focus:ring-primary-100 
+           focus:outline-none transition-all duration-300
+           placeholder:text-gray-400;
+  }
+
+  .startup-form_error {
+    @apply text-red-500 text-sm mt-1 font-medium;
+  }
+
+  .startup-form_btn {
+    @apply w-full rounded-xl bg-black font-semibold text-[16px] text-white 
+           px-5 py-4 hover:bg-primary hover:text-black transition-colors 
+           duration-300 shadow-md disabled:opacity-70 disabled:cursor-not-allowed;
+  }
+
+  /* Form Divider */
+  .form-divider {
+    @apply flex items-center my-6;
+  }
+
+  .form-divider::before,
+  .form-divider::after {
+    @apply flex-1 border-t-2 border-gray-200;
+    content: '';
+  }
+
+  .form-divider-text {
+    @apply mx-4 text-gray-500 text-sm font-medium;
+  }
+
+  /* Form Icon Container */
+  .form-icon-container {
+    @apply absolute left-4 top-1/2 -translate-y-1/2 h-6 w-6 
+           flex-center rounded-full bg-primary-100;
+  }
+
+  .form-icon {
+    @apply h-4 w-4 text-primary;
+  }
+}
