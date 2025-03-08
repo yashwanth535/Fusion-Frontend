@@ -67,7 +67,6 @@ const Register = () => {
     <div className="min-h-screen bg-white-100 flex-center py-12 px-4">
       <div className="max-w-md w-full mx-auto">
         <div className="startup-form hover:shadow-xl">
-          {/* Header */}
           <div className="text-center mb-8">
             <div className="bg-primary-100 w-20 h-20 rounded-full flex-center mx-auto mb-4 shadow-md">
               <ChefHat className="h-12 w-12 text-primary" />
@@ -77,25 +76,17 @@ const Register = () => {
               Join Flavour Fusion and start creating amazing recipes
             </p>
           </div>
-
-          {/* Error Message */}
           {errors.submit && (
             <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
               <p className="text-red-700 font-medium">{errors.submit}</p>
             </div>
           )}
-
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Name Field */}
             <div>
               <label htmlFor="name" className="startup-form_label">
                 Full Name
               </label>
               <div className="relative">
-                {/* <div className="form-icon-container">
-                  <User className="form-icon" />
-                </div> */}
                 <input
                   type="text"
                   id="name"
@@ -111,16 +102,11 @@ const Register = () => {
                 <p id="name-error" className="startup-form_error">{errors.name}</p>
               )}
             </div>
-
-            {/* Email Field */}
             <div>
               <label htmlFor="email" className="startup-form_label">
                 Email Address
               </label>
               <div className="relative">
-                {/* <div className="form-icon-container">
-                  <Mail className="form-icon" />
-                </div> */}
                 <input
                   type="email"
                   id="email"
@@ -136,18 +122,12 @@ const Register = () => {
                 <p id="email-error" className="startup-form_error">{errors.email}</p>
               )}
             </div>
-
-            {/* Password Fields */}
             <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
-              {/* Password */}
               <div>
                 <label htmlFor="password" className="startup-form_label">
                   Password
                 </label>
                 <div className="relative">
-                  {/* <div className="form-icon-container">
-                    <Lock className="form-icon" />
-                  </div> */}
                   <input
                     type="password"
                     id="password"
@@ -163,16 +143,11 @@ const Register = () => {
                   <p id="password-error" className="startup-form_error">{errors.password}</p>
                 )}
               </div>
-
-              {/* Confirm Password */}
               <div>
                 <label htmlFor="confirmPassword" className="startup-form_label">
                   Confirm Password
                 </label>
                 <div className="relative">
-                  {/* <div className="form-icon-container">
-                    <Lock className="form-icon" />
-                  </div> */}
                   <input
                     type="password"
                     id="confirmPassword"
@@ -189,8 +164,6 @@ const Register = () => {
                 )}
               </div>
             </div>
-
-            {/* Password Strength Indicator */}
             {formData.password && (
               <div className="mt-2">
                 <p className="text-sm font-medium mb-1">Password strength:</p>
@@ -213,8 +186,6 @@ const Register = () => {
                 </div>
               </div>
             )}
-
-            {/* Terms Checkbox */}
             <div className="flex items-start mt-4">
               <div className="flex items-center h-5">
                 <input
@@ -237,8 +208,6 @@ const Register = () => {
                 )}
               </div>
             </div>
-
-            {/* Submit Button */}
             <button
               type="submit"
               disabled={isLoading}
@@ -257,13 +226,9 @@ const Register = () => {
               )}
             </button>
           </form>
-
-          {/* Divider */}
           <div className="form-divider my-8">
             <span className="form-divider-text">OR</span>
           </div>
-
-          {/* Social Login */}
           <button className="w-full border-[3px] border-black rounded-xl py-3 flex-center gap-2 hover:bg-gray-50 transition-colors duration-300 shadow-md">
             <img 
               src="https://www.svgrepo.com/show/475656/google-color.svg" 
@@ -272,8 +237,6 @@ const Register = () => {
             />
             <span className="font-medium">Continue with Google</span>
           </button>
-
-          {/* Footer */}
           <div className="mt-8 text-center">
             <p className="text-16-medium text-black-100">
               Already have an account?{' '}

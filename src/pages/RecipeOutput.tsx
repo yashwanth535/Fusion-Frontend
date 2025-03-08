@@ -1,6 +1,7 @@
 import React from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { ChefHat, Share2, Edit, Save, Clock, Users, Utensils } from 'lucide-react';
+import TextToSpeechGoogle from '../components/TextToSpeechGoogle';
 
 const RecipeOutput = () => {
   const { id } = useParams();
@@ -36,6 +37,22 @@ const RecipeOutput = () => {
     ]
   };
 
+  // Prepare content for text-to-speech
+  const ttsContent = `
+    ${recipe.title}. 
+    ${recipe.description}
+    
+    Preparation time: ${recipe.prepTime}. 
+    Cooking time: ${recipe.cookTime}. 
+    Serves ${recipe.servings}.
+    
+    Ingredients:
+    ${recipe.ingredients.join('. ')}
+    
+    Instructions:
+    ${recipe.instructions.join('. ')}
+  `;
+
   return (
     <div className="min-h-screen bg-white-100 py-12">
       <div className="max-w-4xl mx-auto px-4">
@@ -61,6 +78,9 @@ const RecipeOutput = () => {
               </button>
             </div>
           </div>
+
+          {/* Text-to-Speech Component */}
+          <TextToSpeechGoogle content={ttsContent} />
 
           {/* Recipe Image */}
           <div className="relative h-[400px] rounded-[15px] overflow-hidden mb-8 border-[3px] border-black shadow-lg">

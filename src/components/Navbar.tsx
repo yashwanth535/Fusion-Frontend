@@ -5,7 +5,7 @@ import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
   const location = useLocation();
-  const isAuthPage = ['/login', '/register'].includes(location.pathname);
+  const isAuthPage = ['/sign-in', '/sign-up'].includes(location.pathname);
   const { user, signOut } = useAuth();
 
   if (isAuthPage) return null;
@@ -22,6 +22,10 @@ const Navbar = () => {
           <div className="flex items-center space-x-6">
             <Link to="/recipes" className="text-16-medium hover:text-primary transition-colors">
               Recipes
+            </Link>
+            
+            <Link to="/pricing" className="text-16-medium hover:text-primary transition-colors">
+              Pricing
             </Link>
             
             {user && (

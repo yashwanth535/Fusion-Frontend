@@ -98,7 +98,7 @@ const Home = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="min-h-screen bg-white-100">
       {/* Hero Section */}
       <section className="pink_container min-h-[600px]">
         <div className="max-w-7xl mx-auto text-center">
@@ -217,7 +217,7 @@ const Home = () => {
             Join our community of food lovers and start sharing your culinary creations today.
           </p>
           <Link 
-            to="/register" 
+            to="/sign-up" 
             className="startup-card_btn inline-flex items-center gap-2 text-lg"
           >
             <Sparkles className="h-5 w-5" />

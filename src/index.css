@@ -157,4 +157,119 @@
   .form-icon {
     @apply h-4 w-4 text-primary;
   }
+
+  /* Search Bar Styles */
+  .search-form {
+    @apply flex items-center bg-white px-4 py-3 rounded-full w-full max-w-2xl mx-auto mt-8 transition-all duration-300;
+  }
+
+  .search-input {
+    @apply flex-1 bg-transparent border-none outline-none text-16-medium placeholder:text-gray-400;
+  }
+
+  /* Primary color with opacity for hover effects */
+  .primary-100 {
+    @apply bg-primary bg-opacity-20;
+  }
+
+  /* Filter Styles */
+  .filter-container {
+    @apply flex flex-wrap items-center justify-center gap-3 mt-6 relative z-20;
+  }
+
+  .filter-button {
+    @apply flex items-center gap-2 bg-white border-[2px] border-black rounded-full py-2 px-4 
+           text-sm font-medium transition-all duration-200 hover:bg-gray-100;
+  }
+
+  .filter-button-active {
+    @apply bg-primary text-black border-black;
+  }
+
+  .filter-dropdown {
+    @apply absolute left-0 top-full mt-2 bg-white border-[3px] border-black rounded-xl 
+           shadow-lg z-10 w-48 overflow-hidden py-1;
+  }
+
+  .filter-option {
+    @apply w-full text-left px-4 py-2 text-sm font-medium hover:bg-primary-100 
+           transition-colors duration-200;
+  }
+
+  .filter-option-selected {
+    @apply bg-primary-100 font-semibold;
+  }
+
+  .filter-clear-button {
+    @apply flex items-center gap-2 bg-white border-[2px] border-red-500 text-red-500 
+           rounded-full py-2 px-4 text-sm font-medium transition-all duration-200 
+           hover:bg-red-50;
+  }
+
+  /* No Results State */
+  .no-results {
+    @apply flex flex-col items-center justify-center py-12 text-center;
+  }
+
+  /* Add a backdrop for the dropdown */
+  .filter-dropdown::before {
+    content: '';
+    @apply absolute inset-0 -m-1 bg-white/80 backdrop-blur-sm rounded-xl -z-10;
+  }
+
+  /* Pricing Card Styles */
+  .pricing-card {
+    @apply bg-white border-[3px] border-black rounded-[22px] p-8 flex flex-col h-full
+           transition-all duration-300 hover:shadow-xl relative;
+  }
+
+  .pricing-card-highlighted {
+    @apply border-primary shadow-lg transform -translate-y-4;
+  }
+
+  .pricing-card-highlighted::before {
+    content: 'Most Popular';
+    @apply absolute top-0 left-1/2 transform -translate-x-1/2 -translate-y-1/2
+           bg-primary text-black font-bold py-1 px-4 rounded-full text-sm;
+  }
+
+  .pricing-cta-button {
+    @apply block w-full text-center py-3 rounded-full text-white font-medium
+           transition-all duration-300 hover:opacity-90 hover:shadow-lg;
+  }
+
+  /* FAQ Styles */
+  .faq-item {
+    @apply border-b border-gray-200 pb-8;
+  }
+
+  .faq-item:last-child {
+    @apply border-b-0;
+  }
+
+  /* Additional utility classes */
+  .text-primary-600 {
+    @apply text-primary;
+  }
+
+  /* Footer Styles */
+  .text-24-white {
+    @apply text-[24px] font-black text-white leading-snug;
+  }
+
+  .text-18-bold {
+    @apply text-[18px] font-bold leading-tight;
+  }
+
+  .text-white-100 {
+    @apply text-white text-opacity-80;
+  }
+
+  .text-white-800 {
+    @apply text-white text-opacity-20;
+  }
+
+  .text-white-900 {
+    @apply bg-white bg-opacity-10;
+  }
 }
