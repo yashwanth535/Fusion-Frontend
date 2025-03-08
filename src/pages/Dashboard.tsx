@@ -1,39 +1,100 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { ChefHat, Settings, Plus } from 'lucide-react';
+import { ChefHat, Plus, Settings } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
+import RecipeCard, { Recipe, RecipeCardSkeleton } from '../components/RecipeCard';
 
 const Dashboard = () => {
-  // Placeholder data - replace with actual data from API
-  const savedRecipes = [
-    {
-      id: 1,
-      title: "Vegan Chocolate Cake",
-      description: "A rich and moist vegan chocolate cake that's perfect for any occasion.",
-      image: "https://addictedtodates.com/wp-content/uploads/2022/01/vegan-raspberry-chocolate-cake-500x375.jpg"
-    },
-    {
-      id: 2,
-      title: "Spicy Thai Curry",
-      description: "Authentic Thai curry with a perfect balance of spices and coconut milk.",
-      image: "https://source.unsplash.com/random/800x600?curry"
-    },
-    {
-      id: 3,
-      title: "Mediterranean Salad",
-      description: "Fresh and healthy Mediterranean salad with feta cheese and olives.",
-      image: "https://source.unsplash.com/random/800x600?salad"
-    }
-  ];
+  const { user } = useAuth();
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Simulate fetching user recipes
+    // Replace with actual API call in production
+    setTimeout(() => {
+      setRecipes([
+        {
+          _id: "1",
+          title: "Vegan Chocolate Cake",
+          description: "A rich and moist vegan chocolate cake that's perfect for any occasion.",
+          image: "https://addictedtodates.com/wp-content/uploads/2022/01/vegan-raspberry-chocolate-cake-500x375.jpg",
+          category: "Dessert",
+          views: 120,
+          _createdAt: new Date().toISOString(),
+          author: user ? {
+            _id: user._id,
+            name: user.name,
+            image: "https://ui-avatars.com/api/?name=" + user.name
+          } : undefined
+        },
+        {
+          _id: "2",
+          title: "Spicy Thai Curry",
+          description: "Authentic Thai curry with a perfect balance of spices and coconut milk.",
+          image: "https://source.unsplash.com/random/800x600?curry",
+          category: "Main Course",
+          views: 85,
+          _createdAt: new Date().toISOString(),
+          author: user ? {
+            _id: user._id,
+            name: user.name,
+            image: "https://ui-avatars.com/api/?name=" + user.name
+          } : undefined
+        },
+        {
+          _id: "3",
+          title: "Mediterranean Salad",
+          description: "Fresh and healthy Mediterranean salad with feta cheese and olives.",
+          image: "https://source.unsplash.com/random/800x600?salad",
+          category: "Salad",
+          views: 64,
+          _createdAt: new Date().toISOString(),
+          author: user ? {
+            _id: user._id,
+            name: user.name,
+            image: "https://ui-avatars.com/api/?name=" + user.name
+          } : undefined
+        }
+      ]);
+      setLoading(false);
+    }, 1000);
+  }, [user]);
+
+  if (!user) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <p className="text-20-medium">Please log in to view your dashboard</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-white-100 py-12">
-      <div className="max-w-7xl mx-auto px-4">
-        <div className="flex justify-between items-center mb-12">
-          <div className="flex items-center gap-4">
-            <ChefHat className="h-10 w-10 text-primary" />
-            <h1 className="text-30-bold">My Recipe Dashboard</h1>
+    <>
+      <section className="profile_container max-w-7xl mx-auto px-4 py-12">
+        <div className="profile_card">
+          <div className="profile_title">
+            <h3 className="text-24-black uppercase text-center line-clamp-1">
+              {user.name}
+            </h3>
           </div>
-          <div className="flex gap-4">
+
+          <img
+            src={`https://ui-avatars.com/api/?name=${user.name}`}
+            alt={user.name}
+            width={220}
+            height={220}
+            className="profile_image"
+          />
+
+          <p className="text-30-extrabold mt-7 text-center">
+            @{user.email.split('@')[0]}
+          </p>
+          <p className="mt-1 text-center text-14-normal">
+            Passionate food enthusiast and recipe creator
+          </p>
+          
+          <div className="flex gap-4 mt-6 justify-center">
             <Link
               to="/create"
               className="startup-card_btn flex items-center gap-2"
@@ -48,27 +109,23 @@ const Dashboard = () => {
           </div>
         </div>
 
-        <div className="card_grid">
-          {savedRecipes.map((recipe) => (
-            <div key={recipe.id} className="startup-card">
-              <img
-                src={recipe.image}
-                alt={recipe.title}
-                className="startup-card_img mb-4"
-              />
-              <h3 className="text-20-medium mb-2">{recipe.title}</h3>
-              <p className="startup-card_desc">{recipe.description}</p>
-              <Link
-                to={`/recipe/${recipe.id}`}
-                className="startup-card_btn inline-block mt-4"
-              >
-                View Recipe
-              </Link>
-            </div>
-          ))}
+        <div className="flex-1 flex flex-col gap-5 lg:-mt-5">
+          <p className="text-30-bold">Your Recipes</p>
+          
+          {loading ? (
+            <ul className="card_grid-sm">
+              <RecipeCardSkeleton />
+            </ul>
+          ) : (
+            <ul className="card_grid-sm">
+              {recipes.map((recipe) => (
+                <RecipeCard key={recipe._id} recipe={recipe} />
+              ))}
+            </ul>
+          )}
         </div>
-      </div>
-    </div>
+      </section>
+    </>
   );
 };
 

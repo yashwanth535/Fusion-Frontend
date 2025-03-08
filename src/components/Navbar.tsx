@@ -1,16 +1,12 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ChefHat, Sun, Moon, LogIn } from 'lucide-react';
+import { ChefHat, LogIn, LogOut } from 'lucide-react';
+import { useAuth } from '../context/AuthContext';
 
 const Navbar = () => {
-  const [isDarkMode, setIsDarkMode] = React.useState(false);
   const location = useLocation();
   const isAuthPage = ['/login', '/register'].includes(location.pathname);
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode);
-    document.documentElement.classList.toggle('dark');
-  };
+  const { user, signOut } = useAuth();
 
   if (isAuthPage) return null;
 
@@ -24,19 +20,38 @@ const Navbar = () => {
           </Link>
 
           <div className="flex items-center space-x-6">
-            <Link to="/create" className="text-16-medium hover:text-primary transition-colors">
-              Create Recipe
+            <Link to="/recipes" className="text-16-medium hover:text-primary transition-colors">
+              Recipes
             </Link>
-            <Link to="/dashboard" className="text-16-medium hover:text-primary transition-colors">
-              Dashboard
-            </Link>
-            <Link
-              to="/login"
-              className="startup-card_btn flex items-center gap-2 !py-2"
-            >
-              <LogIn className="h-4 w-4" />
-              Sign In
-            </Link>
+            
+            {user && (
+              <>
+                <Link to="/create" className="text-16-medium hover:text-primary transition-colors">
+                  Create Recipe
+                </Link>
+                <Link to="/dashboard" className="text-16-medium hover:text-primary transition-colors">
+                  Dashboard
+                </Link>
+              </>
+            )}
+            
+            {user ? (
+              <button
+                onClick={signOut}
+                className="startup-card_btn flex items-center gap-2 !py-2"
+              >
+                <LogOut className="h-4 w-4" />
+                Sign Out
+              </button>
+            ) : (
+              <Link
+                to="/sign-in"
+                className="startup-card_btn flex items-center gap-2 !py-2"
+              >
+                <LogIn className="h-4 w-4" />
+                Sign In
+              </Link>
+            )}
           </div>
         </div>
       </div>
