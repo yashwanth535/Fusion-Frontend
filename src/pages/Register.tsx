@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChefHat, UserPlus, Loader2, Mail, Lock, User, CheckCircle } from 'lucide-react';
 import { registerSchema, type RegisterFormData } from '../lib/validation';
+import { useAuth } from '../context/AuthContext';
 
 const Register = () => {
-  const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
+  // const navigate = useNavigate();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formData, setFormData] = useState<RegisterFormData>({
     name: '',
@@ -14,6 +14,7 @@ const Register = () => {
     confirmPassword: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const {signUp, isLoading} = useAuth();
 
   const validateField = (name: keyof RegisterFormData, value: string) => {
     try {
@@ -41,26 +42,14 @@ const Register = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    if (!acceptedTerms) {
-      setErrors(prev => ({ ...prev, terms: 'You must accept the terms and conditions' }));
-      return;
-    }
-    
-    setIsLoading(true);
-
+    setErrors({});
+    const { name, email, password } = formData;
     try {
-      await registerSchema.parseAsync(formData);
-      // Simulate API call - replace with actual registration
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate('/dashboard');
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrors(prev => ({ ...prev, submit: error.message }));
-      }
-    } finally {
-      setIsLoading(false);
+      await signUp(name, email, password);
+    } catch (err: any) {
+      setErrors({ submit: err.message });
     }
+
   };
 
   return (

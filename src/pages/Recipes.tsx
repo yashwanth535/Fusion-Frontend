@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
-import { ChefHat, Search, Clock, Users, Heart, X, Filter, ChevronDown, Clock3, Flame, Utensils } from 'lucide-react';
+import { ChefHat, Search, Clock, Users, Heart, X, ChevronDown, Clock3, Flame, Utensils } from 'lucide-react';
 
 const Recipes = () => {
   const [searchQuery, setSearchQuery] = useState('');

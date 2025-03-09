@@ -2,14 +2,15 @@ import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { ChefHat, LogIn, Loader2, Mail, Lock } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '../lib/validation';
+import { useAuth } from '../context/AuthContext';
 
 const Login = () => {
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<LoginFormData>({
     email: '',
     password: '',
   });
+  const { signIn, isLoading } = useAuth();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateField = (name: keyof LoginFormData, value: string) => {
@@ -31,19 +32,12 @@ const Login = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setIsLoading(true);
-
+    setErrors({});
+    const { email, password } = formData;
     try {
-      await loginSchema.parseAsync(formData);
-      // Simulate API call - replace with actual authentication
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      navigate('/dashboard');
-    } catch (error) {
-      if (error instanceof Error) {
-        setErrors(prev => ({ ...prev, submit: error.message }));
-      }
-    } finally {
-      setIsLoading(false);
+      await signIn(email, password);
+    } catch (err: any) {
+      setErrors({ submit: err.message });
     }
   };
 

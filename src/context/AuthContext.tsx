@@ -21,7 +21,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const url = "";
+  const url = "http://localhost:3000";
 
   const checkAuth = async () => {
     try {
@@ -89,7 +89,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       console.log('Authentication successful, navigating to app...');
       
       await Promise.resolve();
-      navigate('/app', { replace: true });
+      navigate('/', { replace: true });
     } catch (error) {
       console.error('Sign in error:', error);
       throw error;
@@ -104,7 +104,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const response = await fetch(`${url}/api/v1/auth/sign-up`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, password }),
+        body: JSON.stringify({ name, email, password, confirmPassword: password }),
       });
 
       const data = await response.json();
