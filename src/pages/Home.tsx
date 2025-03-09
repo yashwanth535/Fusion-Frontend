@@ -63,14 +63,14 @@ const Home = () => {
     { 
       name: "Healthy",
       icon: <Heart className="h-8 w-8" />,
-      image: "https://source.unsplash.com/random/400x300?healthy+food",
+      image: "./healthy.jpeg",
       description: "Nutritious options",
       count: 192
     },
     { 
       name: "Quick & Easy",
       icon: <Timer className="h-8 w-8" />,
-      image: "https://source.unsplash.com/random/400x300?quick+meal",
+      image: "./quick.jpeg",
       description: "Ready in 30 minutes",
       count: 145
     },
@@ -84,14 +84,14 @@ const Home = () => {
     { 
       name: "Vegetarian",
       icon: <Sparkles className="h-8 w-8" />,
-      image: "https://source.unsplash.com/random/400x300?vegetarian+food",
+      image: "./vegie.jpeg",
       description: "Plant-based delights",
       count: 176
     },
     { 
       name: "Trending",
       icon: <Fire className="h-8 w-8" />,
-      image: "https://source.unsplash.com/random/400x300?trending+food",
+      image: "./trendy.jpeg",
       description: "Popular right now",
       count: 95
     }

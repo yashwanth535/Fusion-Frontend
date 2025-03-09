@@ -1,43 +1,22 @@
 import React from 'react';
-import { useParams, Link } from 'react-router-dom';
-import { ChefHat, Share2, Edit, Save, Clock, Users, Utensils } from 'lucide-react';
+import { useParams, useLocation, Link } from 'react-router-dom';
+import { ChefHat, Share2, Edit, Save, Clock, Users, Utensils, ArrowLeft } from 'lucide-react';
 import TextToSpeechGoogle from '../components/TextToSpeechGoogle';
 
 const RecipeOutput = () => {
   const { id } = useParams();
-
-  // Placeholder recipe data - replace with actual data from API
-  const recipe = {
-    title: "Vegan Chocolate Cake",
-    description: "A rich and moist vegan chocolate cake that's perfect for any occasion. This decadent dessert proves that plant-based baking can be just as delicious as traditional recipes.",
-    image: "https://source.unsplash.com/random/1200x800?chocolate+cake",
-    prepTime: "20 mins",
-    cookTime: "35 mins",
-    servings: 8,
-    ingredients: [
-      "2 cups all-purpose flour",
-      "2 cups sugar",
-      "3/4 cup cocoa powder",
-      "2 teaspoons baking soda",
-      "1 teaspoon salt",
-      "2 cups warm water",
-      "2 teaspoons vanilla extract",
-      "2/3 cup vegetable oil",
-      "2 teaspoons vinegar"
-    ],
-    instructions: [
-      "Preheat oven to 350°F (175°C) and line a 9-inch cake pan with parchment paper",
-      "In a large bowl, sift together flour, sugar, cocoa powder, baking soda, and salt",
-      "Add warm water, vanilla extract, vegetable oil, and vinegar to the dry ingredients",
-      "Mix until the batter is smooth and well combined",
-      "Pour the batter into the prepared cake pan",
-      "Bake for 30-35 minutes, or until a toothpick inserted comes out clean",
-      "Let cool completely before frosting",
-      "Enjoy your delicious vegan chocolate cake!"
-    ]
+  const location = useLocation();
+  const recipe = location.state?.recipe || {
+    title: "Recipe Not Found",
+    description: "The recipe you're looking for could not be found.",
+    image: "https://source.unsplash.com/random/1200x800?cooking",
+    prepTime: "N/A",
+    cookTime: "N/A",
+    servings: 0,
+    ingredients: [],
+    instructions: []
   };
 
-  // Prepare content for text-to-speech
   const ttsContent = `
     ${recipe.title}. 
     ${recipe.description}
@@ -57,6 +36,15 @@ const RecipeOutput = () => {
     <div className="min-h-screen bg-white-100 py-12">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-[22px] border-[5px] border-black p-8 shadow-lg">
+          {/* Back Button */}
+          <Link 
+            to="/create" 
+            className="inline-flex items-center gap-2 text-primary hover:text-primary-600 mb-6"
+          >
+            <ArrowLeft className="h-4 w-4" />
+            Back to Recipe Creator
+          </Link>
+
           {/* Header Section */}
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
@@ -79,7 +67,6 @@ const RecipeOutput = () => {
             </div>
           </div>
 
-          {/* Text-to-Speech Component */}
           <TextToSpeechGoogle content={ttsContent} />
 
           {/* Recipe Image */}
@@ -126,7 +113,7 @@ const RecipeOutput = () => {
 
             {/* Ingredients */}
             <div className="startup-card mb-8">
-              <h2 className="text-24-black mb-4">Ingredients</h2>
+              <h2 className="text-24-black mb-4 -mt-2">Ingredients</h2>
               <ul className="list-disc pl-6">
                 {recipe.ingredients.map((ingredient, index) => (
                   <li key={index} className="text-16-medium text-black-100 mb-2">
@@ -138,7 +125,7 @@ const RecipeOutput = () => {
 
             {/* Instructions */}
             <div className="startup-card">
-              <h2 className="text-24-black mb-4">Instructions</h2>
+              <h2 className="text-24-black mb-4 -mt-2">Instructions</h2>
               <ol className="list-decimal pl-6">
                 {recipe.instructions.map((instruction, index) => (
                   <li key={index} className="text-16-medium text-black-100 mb-4">
