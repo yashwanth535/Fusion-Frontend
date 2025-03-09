@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChefHat, LogIn, Loader2, Mail, Lock } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '../lib/validation';
 import { useAuth } from '../context/AuthContext';
+import { GoogleLogin } from '@react-oauth/google';
 
 const Login = () => {
   const navigate = useNavigate();
@@ -10,7 +11,7 @@ const Login = () => {
     email: '',
     password: '',
   });
-  const { signIn, isLoading } = useAuth();
+  const { signIn, isLoading, googleSignIn } = useAuth();
   const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validateField = (name: keyof LoginFormData, value: string) => {
@@ -36,6 +37,17 @@ const Login = () => {
     const { email, password } = formData;
     try {
       await signIn(email, password);
+      navigate('/', { replace: true });
+    } catch (err: any) {
+      setErrors({ submit: err.message });
+    }
+  };
+
+  // Update Google login handler
+  const handleGoogleSuccess = async (credentialResponse: any) => {
+    try {
+      await googleSignIn(credentialResponse.credential);
+      navigate('/', { replace: true });
     } catch (err: any) {
       setErrors({ submit: err.message });
     }
@@ -141,10 +153,19 @@ const Login = () => {
             <span className="form-divider-text">OR</span>
           </div>
 
-          <button className="w-full border-[3px] border-black rounded-xl py-3 flex-center gap-2 hover:bg-gray-50 transition-colors duration-300 shadow-md">
-            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo" className="h-5 w-5" />
-            <span className="font-medium">Continue with Google</span>
-          </button>
+          <div className="flex justify-center">
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={() => {
+                setErrors({ submit: 'Google login failed. Please try again.' });
+              }}
+              useOneTap
+              theme="outline"
+              shape="rectangular"
+              text="continue_with"
+              width="100%"
+            />
+          </div>
 
           <div className="mt-8 text-center">
             <p className="text-16-medium text-black-100">

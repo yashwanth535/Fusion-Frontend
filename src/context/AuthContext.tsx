@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { GoogleOAuthProvider } from '@react-oauth/google';
 
 interface User {
   _id: string;
@@ -13,6 +13,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (name: string, email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  googleSignIn: (credential: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -20,8 +21,7 @@ const AuthContext = createContext<AuthContextType | null>(null);
 export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
-  const url = "http://localhost:3000";
+  const url = import.meta.env.VITE_BACKEND_URL;
 
   const checkAuth = async () => {
     try {
@@ -86,10 +86,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('user', JSON.stringify(data.user));
       
       setUser(data.user);
-      console.log('Authentication successful, navigating to app...');
+      console.log('Authentication successful');
       
-      await Promise.resolve();
-      navigate('/', { replace: true });
+      return Promise.resolve();
     } catch (error) {
       console.error('Sign in error:', error);
       throw error;
@@ -114,7 +113,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.setItem('user', JSON.stringify(data.user));
       setUser(data.user);
       await Promise.resolve(); 
-      navigate('/', { replace: true });
+      return Promise.resolve();
     } catch (error) {
       console.error('Sign up error:', error);
       throw error;
@@ -134,12 +133,59 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       localStorage.removeItem('user');
       setUser(null);
       setIsLoading(false);
-      navigate('/', { replace: true });
+      return Promise.resolve();
+    }
+  };
+
+  const googleSignIn = async (credential: string) => {
+    try {
+      setIsLoading(true);
+      console.log('Attempting Google sign in with credential');
+      
+      const response = await fetch(`${url}/api/v1/auth/google`, {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Accept': 'application/json'
+        },
+        credentials: 'include',
+        body: JSON.stringify({ credential }),
+      });
+
+      const data = await response.json();
+      console.log('Google sign in response:', data);
+
+      if (!response.ok) throw new Error(data.message || 'Google sign in failed');
+
+      if (!data.token) {
+        throw new Error('No token received from server');
+      }
+
+      console.log('Setting authentication data...');
+      localStorage.setItem('token', data.token);
+      localStorage.setItem('user', JSON.stringify(data.user));
+      
+      setUser(data.user);
+      console.log('Authentication successful');
+      
+      return Promise.resolve();
+    } catch (error) {
+      console.error('Google sign in error:', error);
+      throw error;
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, signIn, signUp, signOut }}>
+    <AuthContext.Provider value={{ 
+      user, 
+      isLoading, 
+      signIn, 
+      signUp, 
+      signOut,
+      googleSignIn
+    }}>
       {children}
     </AuthContext.Provider>
   );

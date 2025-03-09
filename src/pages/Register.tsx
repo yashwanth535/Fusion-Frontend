@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { ChefHat, UserPlus, Loader2, Mail, Lock, User, CheckCircle } from 'lucide-react';
 import { registerSchema, type RegisterFormData } from '../lib/validation';
 import { useAuth } from '../context/AuthContext';
+import { useGoogleLogin } from '@react-oauth/google';
 
 const Register = () => {
   // const navigate = useNavigate();
@@ -14,7 +15,7 @@ const Register = () => {
     confirmPassword: '',
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
-  const {signUp, isLoading} = useAuth();
+  const {signUp, isLoading, googleSignIn} = useAuth();
 
   const validateField = (name: keyof RegisterFormData, value: string) => {
     try {
@@ -51,6 +52,21 @@ const Register = () => {
     }
 
   };
+
+  // Add Google login handler
+  const handleGoogleLogin = useGoogleLogin({
+    onSuccess: async (tokenResponse) => {
+      try {
+        await googleSignIn(tokenResponse.access_token);
+      } catch (err: any) {
+        setErrors({ submit: err.message });
+      }
+    },
+    onError: (error) => {
+      setErrors({ submit: 'Google login failed. Please try again.' });
+      console.error('Google login error:', error);
+    }
+  });
 
   return (
     <div className="min-h-screen bg-white-100 flex-center py-12 px-4">
@@ -218,12 +234,12 @@ const Register = () => {
           <div className="form-divider my-8">
             <span className="form-divider-text">OR</span>
           </div>
-          <button className="w-full border-[3px] border-black rounded-xl py-3 flex-center gap-2 hover:bg-gray-50 transition-colors duration-300 shadow-md">
-            <img 
-              src="https://www.svgrepo.com/show/475656/google-color.svg" 
-              alt="Google logo" 
-              className="h-5 w-5" 
-            />
+          <button 
+            type="button"
+            onClick={() => handleGoogleLogin()}
+            className="w-full border-[3px] border-black rounded-xl py-3 flex-center gap-2 hover:bg-gray-50 transition-colors duration-300 shadow-md"
+          >
+            <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo" className="h-5 w-5" />
             <span className="font-medium">Continue with Google</span>
           </button>
           <div className="mt-8 text-center">

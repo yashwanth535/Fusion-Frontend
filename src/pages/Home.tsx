@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Sparkles, ChefHat, Share2, Clock, Users, Heart, Utensils, Search, Timer, Globe, Siren as Fire } from 'lucide-react';
+import { Sparkles, ChefHat, Clock, Users, Heart, Utensils, Search, Timer, Globe, Siren as Fire } from 'lucide-react';
 
 const Home = () => {
   // Featured recipes data
@@ -42,21 +42,21 @@ const Home = () => {
     { 
       name: "Breakfast",
       icon: <Timer className="h-8 w-8" />,
-      image: "https://source.unsplash.com/random/400x300?breakfast",
+      image: "./Breakfast.png",
       description: "Start your day right",
       count: 128
     },
     { 
       name: "Main Course",
       icon: <Utensils className="h-8 w-8" />,
-      image: "https://source.unsplash.com/random/400x300?dinner",
+      image: "./Main Course.png",
       description: "Hearty dinner ideas",
       count: 256
     },
     { 
       name: "Desserts",
       icon: <ChefHat className="h-8 w-8" />,
-      image: "https://source.unsplash.com/random/400x300?dessert",
+      image: "./Dessert.jpg",
       description: "Sweet treats",
       count: 164
     },
@@ -77,7 +77,7 @@ const Home = () => {
     { 
       name: "International",
       icon: <Globe className="h-8 w-8" />,
-      image: "https://source.unsplash.com/random/400x300?international+food",
+      image: "/sushi.jpeg",
       description: "Flavors from around the world",
       count: 218
     },

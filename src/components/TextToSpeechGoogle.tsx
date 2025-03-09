@@ -3,7 +3,7 @@ import axios from "axios";
 import { Volume2, ChevronDown } from "lucide-react";
 
 
-const GOOGLE_TTS_API_KEY = "AIzaSyCWqb4g0ELvyvy07oEXHLZlzjZA9L_MBpI";
+const GOOGLE_TTS_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY;
 const voices = [
   { name: "en-US-Wavenet-A", gender: "Female", label: "Female 1" },
   { name: "en-US-Wavenet-B", gender: "Male", label: "Male 1" },
