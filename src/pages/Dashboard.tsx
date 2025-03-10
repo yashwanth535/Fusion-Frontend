@@ -221,7 +221,7 @@ const Dashboard = () => {
                   
                   <div className="flex items-center justify-between mt-4 pt-4 border-t border-black-100/10">
                     <Link
-                      to={`/recipe/${recipe._id}`}
+                      to={`/recipe/view/${recipe._id}`}
                       className="text-16-medium text-primary hover:underline"
                     >
                       View Recipe
