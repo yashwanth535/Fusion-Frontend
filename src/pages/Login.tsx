@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChefHat, LogIn, Loader2, Mail, Lock } from 'lucide-react';
+import { ChefHat, LogIn, Loader2, Mail, Lock, AlertCircle, CheckCircle } from 'lucide-react';
 import { loginSchema, type LoginFormData } from '../lib/validation';
 import { useAuth } from '../context/AuthContext';
 import { GoogleLogin } from '@react-oauth/google';
@@ -13,6 +13,7 @@ const Login = () => {
   });
   const { signIn, isLoading, googleSignIn } = useAuth();
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const validateField = (name: keyof LoginFormData, value: string) => {
     try {
@@ -34,10 +35,14 @@ const Login = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+    setSuccessMessage(null);
     const { email, password } = formData;
     try {
       await signIn(email, password);
-      navigate('/', { replace: true });
+      setSuccessMessage("Login successful! Redirecting...");
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 1500);
     } catch (err: any) {
       setErrors({ submit: err.message });
     }
@@ -46,8 +51,12 @@ const Login = () => {
   // Update Google login handler
   const handleGoogleSuccess = async (credentialResponse: any) => {
     try {
+      setSuccessMessage(null);
       await googleSignIn(credentialResponse.credential);
-      navigate('/', { replace: true });
+      setSuccessMessage("Google login successful! Redirecting...");
+      setTimeout(() => {
+        navigate('/', { replace: true });
+      }, 1500);
     } catch (err: any) {
       setErrors({ submit: err.message });
     }
@@ -67,8 +76,16 @@ const Login = () => {
             </p>
           </div>
 
+          {successMessage && (
+            <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded-lg flex items-center">
+              <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+              <p className="text-green-700 font-medium">{successMessage}</p>
+            </div>
+          )}
+
           {errors.submit && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg flex items-center">
+              <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
               <p className="text-red-700 font-medium">{errors.submit}</p>
             </div>
           )}
@@ -89,12 +106,15 @@ const Login = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@example.com"
-                  className="startup-form_input pl-12"
+                  className={`startup-form_input pl-12 ${errors.email ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
                   aria-describedby={errors.email ? "email-error" : undefined}
                 />
               </div>
               {errors.email && (
-                <p id="email-error" className="startup-form_error">{errors.email}</p>
+                <p id="email-error" className="flex items-center text-red-600 text-sm mt-1">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  Invalid email format
+                </p>
               )}
             </div>
 
@@ -121,12 +141,15 @@ const Login = () => {
                   value={formData.password}
                   onChange={handleChange}
                   placeholder="Enter your password"
-                  className="startup-form_input pl-12"
+                  className={`startup-form_input pl-12 ${errors.password ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
                   aria-describedby={errors.password ? "password-error" : undefined}
                 />
               </div>
               {errors.password && (
-                <p id="password-error" className="startup-form_error">{errors.password}</p>
+                <p id="password-error" className="flex items-center text-red-600 text-sm mt-1">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  Invalid password format
+                </p>
               )}
             </div>
 

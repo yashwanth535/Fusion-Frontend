@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChefHat, Share2, Edit, Save, Clock, Users, Utensils, ArrowLeft } from 'lucide-react';
+import { ChefHat, Share2, Edit, Save, Clock, Users, Utensils, ArrowLeft, Download } from 'lucide-react';
 import TextToSpeechGoogle from '../components/TextToSpeechGoogle';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
 
 const RecipeView = () => {
   const { id } = useParams();
@@ -9,8 +11,8 @@ const RecipeView = () => {
   interface Recipe {
     title: string;
     description: string;
-    prepTime: number;  // Changed from string to number
-    cookTime: number;  // Changed from string to number
+    prepTime: number;
+    cookTime: number;
     servings: number;
     ingredients: string[];
     instructions: string[];
@@ -24,14 +26,14 @@ const RecipeView = () => {
   useEffect(() => {
     const fetchRecipe = async () => {
       try {
-        const response = await fetch(`http://localhost:3000/api/v1/recipe/fetch/${id}`);
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/recipe/fetch/${id}`);
 
         if (!response.ok) {
           throw new Error('Recipe not found');
         }
 
         const data = await response.json();
-        setRecipe(data.data);  // Fix: Extracting `data` from API response
+        setRecipe(data.data);
 
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Something went wrong');
@@ -42,6 +44,72 @@ const RecipeView = () => {
 
     fetchRecipe();
   }, [id]);
+
+  const downloadPDF = () => {
+    if (!recipe) return;
+
+    const doc = new jsPDF();
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const margin = 20;
+    const contentWidth = pageWidth - 2 * margin;
+
+    // Set title
+    doc.setFontSize(24);
+    doc.setFont('helvetica', 'bold');
+    doc.text(recipe.title, margin, 20);
+
+    // Set description
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    const descriptionLines = doc.splitTextToSize(recipe.description, contentWidth);
+    doc.text(descriptionLines, margin, 30);
+
+    let yPos = 30 + descriptionLines.length * 7;
+
+    // Recipe info
+    doc.setFontSize(14);
+    doc.setFont('helvetica', 'bold');
+    doc.text(`Prep Time: ${recipe.prepTime} min | Cook Time: ${recipe.cookTime} min | Servings: ${recipe.servings}`, margin, yPos);
+    yPos += 10;
+
+    // Ingredients
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Ingredients', margin, yPos);
+    yPos += 10;
+    
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    recipe.ingredients.forEach(ingredient => {
+      doc.text(`• ${ingredient}`, margin + 5, yPos);
+      yPos += 7;
+    });
+    
+    yPos += 5;
+
+    // Instructions
+    doc.setFontSize(16);
+    doc.setFont('helvetica', 'bold');
+    doc.text('Instructions', margin, yPos);
+    yPos += 10;
+    
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'normal');
+    recipe.instructions.forEach((instruction, index) => {
+      const instructionLines = doc.splitTextToSize(`${index + 1}. ${instruction}`, contentWidth - 5);
+      doc.text(instructionLines, margin, yPos);
+      yPos += instructionLines.length * 7 + 3;
+      
+      // Check if we need a new page
+      if (yPos > doc.internal.pageSize.getHeight() - 20) {
+        doc.addPage();
+        yPos = 20;
+      }
+    });
+
+    // Save the PDF
+    doc.save(`${recipe.title.replace(/\s+/g, '-').toLowerCase()}-recipe.pdf`);
+  };
 
   if (loading) return <p className="text-center">Loading recipe...</p>;
   if (error) return <p className="text-center text-red-500">{error}</p>;
@@ -73,9 +141,15 @@ const RecipeView = () => {
               <h1 className="text-30-bold">{recipe.title}</h1>
             </div>
             <div className="flex gap-4">
-              <button className="startup-card_btn flex items-center gap-2"><Edit className="h-4 w-4" />Edit</button>
-              <button className="startup-card_btn flex items-center gap-2"><Save className="h-4 w-4" />Save</button>
-              <button className="startup-card_btn flex items-center gap-2"><Share2 className="h-4 w-4" />Share</button>
+              <button className="startup-card_btn flex items-center gap-2" onClick={
+                () => {
+                  navigator.clipboard.writeText(window.location.href);
+                  alert('Link copied to clipboard!');
+                }
+              }><Share2 className="h-4 w-4" />Share</button>
+              <button className="startup-card_btn flex items-center gap-2" onClick={downloadPDF}>
+                <Download className="h-4 w-4" />PDF
+              </button>
             </div>
           </div>
 

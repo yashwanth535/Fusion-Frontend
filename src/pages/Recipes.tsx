@@ -2,6 +2,22 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Link } from 'react-router-dom';
 import { ChefHat, Search, Clock, Users, Heart, X, ChevronDown, Clock3, Flame, Utensils } from 'lucide-react';
 
+interface Recipe {
+  id: number;
+  title: string;
+  description: string;
+  image: string;
+  prepTime: string;
+  category: string;
+  difficulty: string;
+  cuisine: string;
+  mealType: string;
+  author: string;
+  prepTimeMinutes: number;
+  servings: number;
+  likes: number;
+}
+
 const Recipes = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showClearButton, setShowClearButton] = useState(false);
@@ -10,6 +26,8 @@ const Recipes = () => {
   const [selectedTime, setSelectedTime] = useState('Any Time');
   const [selectedDifficulty, setSelectedDifficulty] = useState('Any Difficulty');
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
+  const [recipes, setRecipes] = useState<Recipe[]>([]);
+  const [loading, setLoading] = useState(true);
   
   const filterRef = useRef<HTMLDivElement>(null);
 
@@ -41,87 +59,41 @@ const Recipes = () => {
   // Difficulty filters
   const difficultyFilters = ['Any Difficulty', 'Easy', 'Medium', 'Hard'];
 
-  // Placeholder recipes data - replace with actual data from API
-  const recipes = [
-    {
-      id: 1,
-      title: "Vegan Chocolate Cake",
-      description: "A rich and moist vegan chocolate cake that's perfect for any occasion.",
-      image: "https://source.unsplash.com/random/800x600?chocolate+cake",
-      prepTime: "45 mins",
-      prepTimeMinutes: 45,
-      servings: 8,
-      likes: 124,
-      author: "Sarah Johnson",
-      category: "Dessert",
-      difficulty: "Medium"
-    },
-    {
-      id: 2,
-      title: "Mediterranean Quinoa Bowl",
-      description: "Fresh and healthy Mediterranean-style quinoa bowl with roasted vegetables.",
-      image: "https://source.unsplash.com/random/800x600?quinoa+bowl",
-      prepTime: "25 mins",
-      prepTimeMinutes: 25,
-      servings: 4,
-      likes: 98,
-      author: "Michael Chen",
-      category: "Lunch",
-      difficulty: "Easy"
-    },
-    {
-      id: 3,
-      title: "Classic Margherita Pizza",
-      description: "Traditional Italian pizza with fresh basil, mozzarella, and tomato sauce.",
-      image: "https://source.unsplash.com/random/800x600?margherita+pizza",
-      prepTime: "30 mins",
-      prepTimeMinutes: 30,
-      servings: 6,
-      likes: 156,
-      author: "Laura Smith",
-      category: "Dinner",
-      difficulty: "Medium"
-    },
-    {
-      id: 4,
-      title: "Spicy Thai Green Curry",
-      description: "Authentic Thai green curry with coconut milk and fresh vegetables.",
-      image: "https://source.unsplash.com/random/800x600?thai+curry",
-      prepTime: "35 mins",
-      prepTimeMinutes: 35,
-      servings: 4,
-      likes: 142,
-      author: "David Wilson",
-      category: "Dinner",
-      difficulty: "Hard"
-    },
-    {
-      id: 5,
-      title: "Berry Smoothie Bowl",
-      description: "Refreshing smoothie bowl packed with mixed berries and healthy toppings.",
-      image: "https://source.unsplash.com/random/800x600?smoothie+bowl",
-      prepTime: "10 mins",
-      prepTimeMinutes: 10,
-      servings: 1,
-      likes: 87,
-      author: "Emma Davis",
-      category: "Breakfast",
-      difficulty: "Easy"
-    },
-    {
-      id: 6,
-      title: "Homemade Sushi Rolls",
-      description: "Fresh and delicious sushi rolls with avocado and cucumber.",
-      image: "https://source.unsplash.com/random/800x600?sushi+rolls",
-      prepTime: "45 mins",
-      prepTimeMinutes: 45,
-      servings: 4,
-      likes: 167,
-      author: "Alex Kim",
-      category: "Lunch",
-      difficulty: "Hard"
-    }
-  ];
+  useEffect(() => {
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/recipe/fetch/`);
+        const data = await response.json();
+        
+        if (data.success) {
+          // Transform backend data to match our Recipe interface
+          const transformedRecipes = data.data.map((item: any) => ({
+            id: item._id,
+            title: item.title,
+            description: item.description,
+            image: item.imageURL,
+            prepTime: `${item.prepTime + item.cookTime} mins`,
+            category: item.category,
+            difficulty: item.difficulty,
+            cuisine: item.cuisine,
+            mealType: item.mealType,
+            author: item.uploadedBy, // This might need to be fetched separately or included in the response
+            prepTimeMinutes: item.prepTime + item.cookTime,
+            servings: item.servings,
+            likes: 0 // This might need to be fetched separately or included in the response
+          }));
+          
+          setRecipes(transformedRecipes);
+        }
+      } catch (error) {
+        console.error("Failed to fetch recipes", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchRecipes();
+  }, []);
 
   const handleClearSearch = () => {
     setSearchQuery('');
@@ -168,7 +140,7 @@ const Recipes = () => {
     }
     
     // Difficulty filter
-    const matchesDifficulty = selectedDifficulty === 'Any Difficulty' || recipe.difficulty === selectedDifficulty;
+    const matchesDifficulty = selectedDifficulty === 'Any Difficulty' || recipe.difficulty.toLowerCase() === selectedDifficulty.toLowerCase();
     
     return matchesSearch && matchesCategory && matchesTime && matchesDifficulty;
   });
@@ -329,10 +301,14 @@ const Recipes = () => {
 
       {/* Recipes Grid */}
       <section className="section_container">
-        {filteredRecipes.length > 0 ? (
+        {loading ? (
+          <div className="flex flex-col items-center justify-center py-12">
+            <p className="text-16-medium">Loading recipes...</p>
+          </div>
+        ) : filteredRecipes.length > 0 ? (
           <div className="card_grid">
             {filteredRecipes.map((recipe) => (
-              <Link to={`/recipe/${recipe.id}`} key={recipe.id} className="startup-card group">
+              <Link to={`/recipe/view/${recipe.id}`} key={recipe.id} className="startup-card group">
                 <div className="relative h-[200px] rounded-[10px] overflow-hidden mb-4 border-[3px] border-black">
                   <img
                     src={recipe.image}
@@ -369,7 +345,7 @@ const Recipes = () => {
                 </div>
                 
                 <div className="flex items-center justify-between border-t-2 border-black-100/10 pt-4 mt-4">
-                  <span className="text-16-medium text-black-100">By {recipe.author}</span>
+                  <span className="text-16-medium text-black-100"></span>
                   <button className="startup-card_btn py-2 px-4">View Recipe</button>
                 </div>
               </Link>

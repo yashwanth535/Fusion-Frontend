@@ -1,101 +1,108 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, ChefHat, Clock, Users, Heart, Utensils, Search, Timer, Globe, Siren as Fire } from 'lucide-react';
 
-const Home = () => {
-  // Featured recipes data
-  const featuredRecipes = [
-    {
-      id: 1,
-      title: "Caramelized Banana Pancakes",
-      description: "Fluffy pancakes topped with golden caramelized bananas and maple syrup.",
-      image: "https://source.unsplash.com/random/800x600?pancakes",
-      prepTime: "15 mins",
-      servings: 4,
-      likes: 234,
-      author: "Emma Davis"
-    },
-    {
-      id: 2,
-      title: "Mediterranean Grilled Salmon",
-      description: "Fresh salmon fillet with Mediterranean herbs and lemon.",
-      image: "https://source.unsplash.com/random/800x600?grilled+salmon",
-      prepTime: "25 mins",
-      servings: 2,
-      likes: 189,
-      author: "Michael Chen"
-    },
-    {
-      id: 3,
-      title: "Rustic Apple Tart",
-      description: "Beautiful free-form tart with fresh apples and caramel drizzle.",
-      image: "https://source.unsplash.com/random/800x600?apple+tart",
-      prepTime: "40 mins",
-      servings: 8,
-      likes: 156,
-      author: "Sarah Johnson"
-    }
-  ];
+interface CategoryStats {
+  category: string;
+  count: number;
+}
 
-  // Enhanced Categories with more options and icons
+interface Recipe {
+  _id: string;
+  title: string;
+  description: string;
+  imageURL: string;
+  prepTime: number;
+  cookTime: number;
+  servings: number;
+  category: string;
+  uploadedBy: string;
+}
+
+const Home = () => {
+  const [featuredRecipes, setFeaturedRecipes] = useState<Recipe[]>([]);
+  const [categoryStats, setCategoryStats] = useState<Record<string, number>>({});
+  const [loading, setLoading] = useState(true);
+
+  // Keep the original categories with their images and icons
   const categories = [
     { 
       name: "Breakfast",
       icon: <Timer className="h-8 w-8" />,
       image: "./Breakfast.png",
-      description: "Start your day right",
-      count: 128
+      description: "Start your day right"
     },
     { 
       name: "Main Course",
       icon: <Utensils className="h-8 w-8" />,
       image: "./Main Course.png",
-      description: "Hearty dinner ideas",
-      count: 256
+      description: "Hearty dinner ideas"
     },
     { 
       name: "Desserts",
       icon: <ChefHat className="h-8 w-8" />,
       image: "./Dessert.jpg",
-      description: "Sweet treats",
-      count: 164
+      description: "Sweet treats"
     },
     { 
       name: "Healthy",
       icon: <Heart className="h-8 w-8" />,
       image: "./healthy.jpeg",
-      description: "Nutritious options",
-      count: 192
+      description: "Nutritious options"
     },
     { 
       name: "Quick & Easy",
       icon: <Timer className="h-8 w-8" />,
       image: "./quick.jpeg",
-      description: "Ready in 30 minutes",
-      count: 145
+      description: "Ready in 30 minutes"
     },
     { 
       name: "International",
       icon: <Globe className="h-8 w-8" />,
       image: "/sushi.jpeg",
-      description: "Flavors from around the world",
-      count: 218
+      description: "Flavors from around the world"
     },
     { 
       name: "Vegetarian",
       icon: <Sparkles className="h-8 w-8" />,
       image: "./vegie.jpeg",
-      description: "Plant-based delights",
-      count: 176
+      description: "Plant-based delights"
     },
     { 
       name: "Trending",
       icon: <Fire className="h-8 w-8" />,
       image: "./trendy.jpeg",
-      description: "Popular right now",
-      count: 95
+      description: "Popular right now"
     }
   ];
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // Fetch featured recipes
+        const recipesResponse = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/recipe/fetch/`);
+        const recipesData = await recipesResponse.json();
+        
+        if (recipesData.success) {
+          setFeaturedRecipes(recipesData.data.slice(0, 3));
+          
+          // Calculate category counts from the fetched recipes
+          const counts: Record<string, number> = {};
+          recipesData.data.forEach((recipe: Recipe) => {
+            const category = recipe.category.toLowerCase();
+            counts[category] = (counts[category] || 0) + 1;
+          });
+          setCategoryStats(counts);
+        }
+      } catch (error) {
+        console.error("Failed to fetch data", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchData();
+  }, []);
 
   return (
     <div className="min-h-screen bg-white-100">
@@ -131,7 +138,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* Enhanced Categories Section */}
+      {/* Categories Section with Original Images and Real Counts */}
       <section className="section_container">
         <h2 className="text-30-bold text-center mb-4">Explore Recipe Categories</h2>
         <p className="text-16-medium text-black-100 text-center mb-12">
@@ -160,7 +167,11 @@ const Home = () => {
                   {category.icon}
                 </div>
                 <span className="text-16-medium text-black-100">
-                  {category.count} recipes
+                  {loading ? (
+                    <span className="animate-pulse">...</span>
+                  ) : (
+                    `${categoryStats[category.name.toLowerCase()] || 0} recipes`
+                  )}
                 </span>
               </div>
             </Link>
@@ -175,36 +186,49 @@ const Home = () => {
           Hand-picked recipes that you'll love
         </p>
         <div className="card_grid">
-          {featuredRecipes.map((recipe) => (
-            <Link to={`/recipe/${recipe.id}`} key={recipe.id} className="startup-card group">
-              <div className="relative h-[250px] rounded-[10px] overflow-hidden mb-4 border-[3px] border-black">
-                <img
-                  src={recipe.image}
-                  alt={recipe.title}
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <h3 className="text-20-medium mb-2">{recipe.title}</h3>
-              <p className="startup-card_desc">{recipe.description}</p>
-              <div className="flex items-center justify-between mt-4 mb-2">
-                <div className="flex items-center gap-2">
-                  <Clock className="h-4 w-4 text-primary" />
-                  <span className="text-16-medium">{recipe.prepTime}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <Users className="h-4 w-4 text-primary" />
-                  <span className="text-16-medium">{recipe.servings} servings</span>
+          {loading ? (
+            // Loading state
+            Array(3).fill(0).map((_, index) => (
+              <div key={index} className="startup-card animate-pulse">
+                <div className="relative h-[250px] rounded-[10px] bg-gray-200 mb-4 border-[3px] border-black"></div>
+                <div className="h-6 bg-gray-200 rounded mb-2"></div>
+                <div className="h-4 bg-gray-200 rounded mb-4"></div>
+                <div className="flex items-center justify-between mt-4">
+                  <div className="h-4 w-20 bg-gray-200 rounded"></div>
+                  <div className="h-4 w-20 bg-gray-200 rounded"></div>
                 </div>
               </div>
-              <div className="flex items-center justify-between border-t-2 border-black-100/10 pt-4 mt-4">
-                <span className="text-16-medium text-black-100">By {recipe.author}</span>
-                <div className="flex items-center gap-2">
-                  <Heart className="h-4 w-4 text-primary" />
-                  <span className="text-16-medium">{recipe.likes}</span>
+            ))
+          ) : (
+            featuredRecipes.map((recipe) => (
+              <Link to={`/recipe/view/${recipe._id}`} key={recipe._id} className="startup-card group">
+                <div className="relative h-[250px] rounded-[10px] overflow-hidden mb-4 border-[3px] border-black">
+                  <img
+                    src={recipe.imageURL}
+                    alt={recipe.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                  />
                 </div>
-              </div>
-            </Link>
-          ))}
+                <h3 className="text-20-medium mb-2">{recipe.title}</h3>
+                <p className="startup-card_desc">{recipe.description}</p>
+                <div className="flex items-center justify-between mt-4 mb-2">
+                  <div className="flex items-center gap-2">
+                    <Clock className="h-4 w-4 text-primary" />
+                    <span className="text-16-medium">{recipe.prepTime + recipe.cookTime} mins</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <Users className="h-4 w-4 text-primary" />
+                    <span className="text-16-medium">{recipe.servings} servings</span>
+                  </div>
+                </div>
+                <div className="flex items-center justify-between border-t-2 border-black-100/10 pt-4 mt-4">
+                  <span className="text-16-medium text-black-100">
+                    {recipe.category}
+                  </span>
+                </div>
+              </Link>
+            ))
+          )}
         </div>
       </section>
 

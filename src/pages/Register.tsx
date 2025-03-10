@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChefHat, UserPlus, Loader2, Mail, Lock, User, CheckCircle } from 'lucide-react';
+import { ChefHat, UserPlus, Loader2, Mail, Lock, User, CheckCircle, AlertCircle } from 'lucide-react';
 import { registerSchema, type RegisterFormData } from '../lib/validation';
 import { useAuth } from '../context/AuthContext';
 import { useGoogleLogin } from '@react-oauth/google';
 
 const Register = () => {
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
   const [acceptedTerms, setAcceptedTerms] = useState(false);
   const [formData, setFormData] = useState<RegisterFormData>({
     name: '',
@@ -16,6 +16,7 @@ const Register = () => {
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
   const {signUp, isLoading, googleSignIn} = useAuth();
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
   const validateField = (name: keyof RegisterFormData, value: string) => {
     try {
@@ -44,20 +45,34 @@ const Register = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setErrors({});
+    setSuccessMessage(null);
+    
+    if (!acceptedTerms) {
+      setErrors({ terms: 'You must accept the Terms of Service and Privacy Policy' });
+      return;
+    }
+    
     const { name, email, password } = formData;
     try {
       await signUp(name, email, password);
+      setSuccessMessage("Account created successfully! You can now sign in.");
+      setTimeout(() => {
+        navigate('/sign-in', { replace: true });
+      }, 2000);
     } catch (err: any) {
       setErrors({ submit: err.message });
     }
-
   };
 
-  // Add Google login handler
   const handleGoogleLogin = useGoogleLogin({
     onSuccess: async (tokenResponse) => {
       try {
+        setSuccessMessage(null);
         await googleSignIn(tokenResponse.access_token);
+        setSuccessMessage("Google sign-up successful!");
+        setTimeout(() => {
+          navigate('/', { replace: true });
+        }, 1500);
       } catch (err: any) {
         setErrors({ submit: err.message });
       }
@@ -81,8 +96,15 @@ const Register = () => {
               Join Flavour Fusion and start creating amazing recipes
             </p>
           </div>
+          {successMessage && (
+            <div className="bg-green-50 border-l-4 border-green-500 p-4 mb-6 rounded-lg flex items-center">
+              <CheckCircle className="h-5 w-5 text-green-500 mr-2" />
+              <p className="text-green-700 font-medium">{successMessage}</p>
+            </div>
+          )}
           {errors.submit && (
-            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg">
+            <div className="bg-red-50 border-l-4 border-red-500 p-4 mb-6 rounded-lg flex items-center">
+              <AlertCircle className="h-5 w-5 text-red-500 mr-2" />
               <p className="text-red-700 font-medium">{errors.submit}</p>
             </div>
           )}
@@ -99,12 +121,15 @@ const Register = () => {
                   value={formData.name}
                   onChange={handleChange}
                   placeholder="John Doe"
-                  className="startup-form_input pl-12"
+                  className={`startup-form_input pl-12 ${errors.name ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
                   aria-describedby={errors.name ? "name-error" : undefined}
                 />
               </div>
               {errors.name && (
-                <p id="name-error" className="startup-form_error">{errors.name}</p>
+                <p id="name-error" className="flex items-center text-red-600 text-sm mt-1">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  Invalid name
+                </p>
               )}
             </div>
             <div>
@@ -119,12 +144,15 @@ const Register = () => {
                   value={formData.email}
                   onChange={handleChange}
                   placeholder="you@example.com"
-                  className="startup-form_input pl-12"
+                  className={`startup-form_input pl-12 ${errors.email ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
                   aria-describedby={errors.email ? "email-error" : undefined}
                 />
               </div>
               {errors.email && (
-                <p id="email-error" className="startup-form_error">{errors.email}</p>
+                <p id="email-error" className="flex items-center text-red-600 text-sm mt-1">
+                  <AlertCircle className="h-4 w-4 mr-1" />
+                  Invalid email format
+                </p>
               )}
             </div>
             <div className="space-y-4 md:space-y-0 md:grid md:grid-cols-2 md:gap-4">
@@ -140,12 +168,15 @@ const Register = () => {
                     value={formData.password}
                     onChange={handleChange}
                     placeholder="Create a password"
-                    className="startup-form_input pl-12"
+                    className={`startup-form_input pl-12 ${errors.password ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
                     aria-describedby={errors.password ? "password-error" : undefined}
                   />
                 </div>
                 {errors.password && (
-                  <p id="password-error" className="startup-form_error">{errors.password}</p>
+                  <p id="password-error" className="flex items-center text-red-600 text-sm mt-1">
+                    <AlertCircle className="h-4 w-4 mr-1" />
+                    Invalid password format
+                  </p>
                 )}
               </div>
               <div>
@@ -160,12 +191,15 @@ const Register = () => {
                     value={formData.confirmPassword}
                     onChange={handleChange}
                     placeholder="Confirm password"
-                    className="startup-form_input pl-12"
+                    className={`startup-form_input pl-12 ${errors.confirmPassword ? 'border-red-500 focus:ring-red-500 focus:border-red-500' : ''}`}
                     aria-describedby={errors.confirmPassword ? "confirm-password-error" : undefined}
                   />
                 </div>
                 {errors.confirmPassword && (
-                  <p id="confirm-password-error" className="startup-form_error">{errors.confirmPassword}</p>
+                  <p id="confirm-password-error" className="flex items-center text-red-600 text-sm mt-1">
+                    <AlertCircle className="h-4 w-4 mr-1" />
+                    Invalid confirm password format
+                  </p>
                 )}
               </div>
             </div>
@@ -209,7 +243,10 @@ const Register = () => {
                   <a href="#" className="text-primary hover:underline">Privacy Policy</a>
                 </label>
                 {errors.terms && (
-                  <p className="startup-form_error mt-1">{errors.terms}</p>
+                  <p className="flex items-center text-red-600 text-sm mt-1">
+                    <AlertCircle className="h-4 w-4 mr-1" />
+                    {errors.terms}
+                  </p>
                 )}
               </div>
             </div>

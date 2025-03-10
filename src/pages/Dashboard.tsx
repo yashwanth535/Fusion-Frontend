@@ -62,6 +62,33 @@ const Dashboard = () => {
     fetchRecipes();
   }, [user]);
 
+  const handleDelete = async (id: string) => {
+
+    const token = localStorage.getItem('token');
+    if (!token || !user) {
+      navigate('/sign-in');
+      return;
+    }
+
+    try {
+      const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/recipe/delete/${id}`, {
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setRecipes(recipes.filter((recipe) => recipe._id !== data.data._id));
+      }
+      
+    } catch (error) {
+      console.error("Failed to delete recipe", error);
+    }
+
+  }
+
   const filteredRecipes = recipes.filter(recipe => {
     const matchesSearch = recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
                          recipe.description.toLowerCase().includes(searchQuery.toLowerCase());
@@ -154,7 +181,6 @@ const Dashboard = () => {
             {/* Search and Filter */}
             <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
               <div className="relative flex-1 sm:w-64">
-                <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search recipes..."
@@ -164,7 +190,6 @@ const Dashboard = () => {
                 />
               </div>
               <div className="relative flex-1 sm:w-48">
-                <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-5 w-5 text-gray-400" />
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
@@ -197,10 +222,7 @@ const Dashboard = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-4 right-4 flex gap-2">
-                      <button className="p-2 bg-white rounded-full shadow-md hover:bg-primary hover:text-white transition-colors">
-                        <Edit3 className="h-4 w-4" />
-                      </button>
-                      <button className="p-2 bg-white rounded-full shadow-md hover:bg-red-500 hover:text-white transition-colors">
+                      <button className="p-2 bg-white rounded-full shadow-md hover:bg-red-500 hover:text-white transition-colors" onClick={() => handleDelete(recipe._id)}>
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
