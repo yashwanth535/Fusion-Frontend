@@ -163,6 +163,7 @@ const RecipeOutput = () => {
     
         // Navigate after publishing
         if (modalType === 'publish') {
+          console.log()
           navigate(`/recipe/view/${data._id}`, { state: { recipe: data } });
         }
       } catch (error) {

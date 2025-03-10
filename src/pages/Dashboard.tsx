@@ -1,25 +1,25 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { 
   ChefHat, 
   Plus, 
   Settings, 
   Eye, 
-  Clock, 
   BookOpen, 
   Heart,
-  Share2,
-  Edit3,
-  Trash2,
+  Star,
   Filter,
   Search,
-  Star
+  Edit3,
+  Share2,
+  Trash2
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Recipe, RecipeCardSkeleton } from '../components/RecipeCard';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
@@ -35,55 +35,31 @@ const Dashboard = () => {
   const categories = ['all', 'dessert', 'main course', 'salad', 'appetizer', 'breakfast'];
 
   useEffect(() => {
-    // Simulate fetching user recipes
-    // Replace with actual API call in production
-    setTimeout(() => {
-      setRecipes([
-        {
-          _id: "1",
-          title: "Vegan Chocolate Cake",
-          description: "A rich and moist vegan chocolate cake that's perfect for any occasion.",
-          image: "https://source.unsplash.com/random/800x600?chocolate+cake",
-          category: "Dessert",
-          views: 120,
-          _createdAt: new Date().toISOString(),
-          author: user ? {
-            _id: user._id,
-            name: user.name,
-            image: "https://ui-avatars.com/api/?name=" + user.name
-          } : undefined
-        },
-        {
-          _id: "2",
-          title: "Spicy Thai Curry",
-          description: "Authentic Thai curry with a perfect balance of spices and coconut milk.",
-          image: "https://source.unsplash.com/random/800x600?curry",
-          category: "Main Course",
-          views: 85,
-          _createdAt: new Date().toISOString(),
-          author: user ? {
-            _id: user._id,
-            name: user.name,
-            image: "https://ui-avatars.com/api/?name=" + user.name
-          } : undefined
-        },
-        {
-          _id: "3",
-          title: "Mediterranean Salad",
-          description: "Fresh and healthy Mediterranean salad with feta cheese and olives.",
-          image: "https://source.unsplash.com/random/800x600?salad",
-          category: "Salad",
-          views: 64,
-          _createdAt: new Date().toISOString(),
-          author: user ? {
-            _id: user._id,
-            name: user.name,
-            image: "https://ui-avatars.com/api/?name=" + user.name
-          } : undefined
+    const token = localStorage.getItem('token');
+      if (!token || !user) {
+        navigate('/sign-in');
+        return;
+      }
+
+
+    const fetchRecipes = async () => {
+      try {
+        const response = await fetch(`${import.meta.env.VITE_BACKEND_URL}/api/v1/recipe/fetch/user/${user._id}`,
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        const data = await response.json();
+        
+        if (data.success) {
+          setRecipes(data.data);
         }
-      ]);
-      setLoading(false);
-    }, 1000);
+      } catch (error) {
+        console.error("Failed to fetch recipes", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchRecipes();
   }, [user]);
 
   const filteredRecipes = recipes.filter(recipe => {
@@ -110,8 +86,7 @@ const Dashboard = () => {
 
   return (
     <div className="min-h-screen bg-white-100">
-      {/* Profile Header */}
-      <section className="pink_container mb-20 ">
+      <section className="pink_container mb-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <img
@@ -146,7 +121,6 @@ const Dashboard = () => {
         </div>
       </section>
 
-      {/* Stats Section */}
       <section className="max-w-7xl mx-auto px-4 -mt-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="startup-card text-center">
@@ -171,9 +145,8 @@ const Dashboard = () => {
           </div>
         </div>
       </section>
-
-      {/* Recipes Section */}
-      <section className="max-w-7xl mx-auto px-4 py-12">
+       {/* Recipes Section */}
+       <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <h2 className="text-30-bold">Your Recipes</h2>
@@ -219,7 +192,7 @@ const Dashboard = () => {
                 <div key={recipe._id} className="startup-card group">
                   <div className="relative h-48 rounded-[10px] overflow-hidden mb-4 border-[3px] border-black">
                     <img
-                      src={recipe.image}
+                      src={recipe.imageURL}
                       alt={recipe.title}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />

@@ -67,7 +67,6 @@ const RecipeView = () => {
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-[22px] border-[5px] border-black p-8 shadow-lg">
 
-
           <div className="flex items-center justify-between mb-8">
             <div className="flex items-center gap-4">
               <ChefHat className="h-10 w-10 text-primary" />
