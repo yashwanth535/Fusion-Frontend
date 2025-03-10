@@ -136,7 +136,7 @@ const Dashboard = () => {
                   <Plus className="h-4 w-4" />
                   New Recipe
                 </Link>
-                <button className="startup-card_btn flex items-center gap-2">
+                <button className="startup-card_btn !bg-white !text-black hover:!bg-black hover:!text-white flex items-center gap-2">
                   <Settings className="h-4 w-4" />
                   Edit Profile
                 </button>

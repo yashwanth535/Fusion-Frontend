@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { ChefHat, Loader2 } from 'lucide-react';
+import { ArrowRight, ChefHat, Loader2 } from 'lucide-react';
 
 const RecipeInput = () => {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
+  const [currentJokeIndex, setCurrentJokeIndex] = useState(0);
   const [tokenStatus, setTokenStatus] = useState<'checking' | 'valid' | 'invalid'>('checking');
   const [formData, setFormData] = useState({
     topic: '',
@@ -12,7 +13,6 @@ const RecipeInput = () => {
     cuisine: '',
     cookingTime: '',
     servings: '',
-    image: '',
     difficulty: 'medium',
   });
   const [error, setError] = useState('');
@@ -40,12 +40,10 @@ const RecipeInput = () => {
     }
 
     try {
-      // Check if the backend URL is properly defined
       const backendUrl = import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000';
       
       console.log(`Attempting to connect to: ${backendUrl}/api/v1/recipe/generate`);
       console.log('Auth token exists:', !!token);
-      // Log only first few characters of token for debugging (be careful with sensitive info)
       if (token && token.length > 8) {
         console.log('Token format check:', `${token.substring(0, 4)}...${token.substring(token.length - 4)}`);
       }
@@ -62,8 +60,7 @@ const RecipeInput = () => {
       });
 
       if (response.status === 401) {
-        // Token is invalid or expired
-        localStorage.removeItem('token'); // Clear invalid token
+        localStorage.removeItem('token');
         setTokenStatus('invalid');
         throw new Error('Your session has expired. Please log in again.');
       }
@@ -86,9 +83,14 @@ const RecipeInput = () => {
       setIsLoading(false);
     }
   };
+  const handleNextJoke = () => {
+    setCurrentJokeIndex((prevIndex) => 
+      prevIndex === programmingJokes.length - 1 ? 0 : prevIndex + 1
+    );
+  };
+
 
   const handleLogin = () => {
-    // Redirect to login page
     navigate('/login', { state: { returnTo: '/create-recipe' } });
   };
 
@@ -96,11 +98,26 @@ const RecipeInput = () => {
     "Why do programmers prefer dark mode? Because light attracts bugs!",
     "Why did the AI chef quit? It couldn't handle too many recursive recipes!",
     "What's a chef's favorite programming language? Chocolate Chip!",
+    "Why did the function go to the doctor? Because it wasn't returning well!",
+    "What's a chef's favorite data structure? A cook-ie tree!",
+    "Why don't programmers like to cook? They don't like waiting for things to compile!",
+    "What did the chef say to the JavaScript developer? You better curry that function!",
+    "How does a chef debug their recipe? With a taste stack trace!",
+    "What's a baker's favorite React hook? useYeast()!",
+    "Why did the recipe compiler fail? Too many nested cookies!"
   ];
 
-  const [currentJoke] = useState(
-    programmingJokes[Math.floor(Math.random() * programmingJokes.length)]
-  );
+  useEffect(() => {
+    let interval: number;
+    if (isLoading) {
+      interval = setInterval(() => {
+        setCurrentJokeIndex((prevIndex) => 
+          prevIndex === programmingJokes.length - 1 ? 0 : prevIndex + 1
+        );
+      }, 5000);
+    }
+    return () => clearInterval(interval);
+  }, [isLoading]);
 
   return (
     <div className="min-h-screen bg-white-100 py-12">
@@ -234,20 +251,6 @@ const RecipeInput = () => {
                   </div>
                 </div>
 
-                <div>
-                  <label htmlFor="topic" className="startup-form_label">
-                    Image URL
-                  </label>
-                  <input
-                    type="url"
-                    id="url"
-                    value={formData.image}
-                    onChange={(e) => setFormData({ ...formData, image: e.target.value })}
-                    placeholder="e.g., http://example.com/image.jpg"
-                    className="startup-form_input"
-                    required
-                  />
-                </div>
 
                 <div>
                   <label htmlFor="wordCount" className="startup-form_label">
@@ -285,16 +288,34 @@ const RecipeInput = () => {
                 </button>
               </form>
 
-              {isLoading && (
-                <div className="mt-8 p-6 bg-primary-100 rounded-xl border-[3px] border-black">
-                  <p className="text-16-medium text-center italic">
-                    While we cook up your recipe, here's a joke to brighten your day:
-                  </p>
-                  <p className="text-20-medium text-center mt-4 font-semibold">
-                    {currentJoke}
-                  </p>
-                </div>
-              )}
+        {/* Loading Modal with Jokes */}
+        {isLoading && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="startup-card max-w-lg mx-4 transform transition-all animate-fade-up">
+            <div className="flex justify-center mb-6">
+              <Loader2 className="h-12 w-12 text-primary animate-spin" />
+            </div>
+            <h3 className="text-24-black text-center mb-4">
+              Cooking up your recipe...
+            </h3>
+            <div className="bg-primary-50 rounded-xl p-6 mb-6 min-h-[120px] flex flex-col items-center justify-center">
+              <p className="text-20-medium text-center mb-4">
+                {programmingJokes[currentJokeIndex]}
+              </p>
+              <button
+                onClick={handleNextJoke}
+                className="flex items-center gap-2 text-primary hover:text-primary-600 transition-colors"
+              >
+                Next Joke
+                <ArrowRight className="h-4 w-4" />
+              </button>
+            </div>
+            <p className="text-16-medium text-black-100 text-center">
+              This might take a moment. Enjoy some tech humor while you wait!
+            </p>
+          </div>
+        </div>
+      )}
             </>
           )}
         </div>

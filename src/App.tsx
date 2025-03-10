@@ -12,6 +12,7 @@ import Recipes from './pages/Recipes';
 import Pricing from './pages/Pricing';
 import { AuthProvider } from './context/AuthContext';
 import AuthGuard from './components/AuthGuard';
+import RecipeView from './pages/RecipeView';
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
                 </AuthGuard>
               } />
               <Route path="/recipe/:id" element={<RecipeOutput />} />
+              <Route path="recipe/view/:id" element={<RecipeView />} />
               <Route path="/dashboard" element={
                 <AuthGuard>
                   <Dashboard />
