@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ChefHat, UserPlus, Loader2, Mail, Lock, User, CheckCircle, AlertCircle } from 'lucide-react';
+import { ChefHat, UserPlus, Loader2, CheckCircle, AlertCircle } from 'lucide-react';
 import { registerSchema, type RegisterFormData } from '../lib/validation';
 import { useAuth } from '../context/AuthContext';
 import { useGoogleLogin } from '@react-oauth/google';
@@ -268,7 +268,7 @@ const Register = () => {
               )}
             </button>
           </form>
-          <div className="form-divider my-8">
+          {/* <div className="form-divider my-8">
             <span className="form-divider-text">OR</span>
           </div>
           <button 
@@ -278,7 +278,7 @@ const Register = () => {
           >
             <img src="https://www.svgrepo.com/show/475656/google-color.svg" alt="Google logo" className="h-5 w-5" />
             <span className="font-medium">Continue with Google</span>
-          </button>
+          </button> */}
           <div className="mt-8 text-center">
             <p className="text-16-medium text-black-100">
               Already have an account?{' '}

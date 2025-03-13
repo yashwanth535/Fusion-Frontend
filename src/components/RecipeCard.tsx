@@ -10,6 +10,7 @@ export interface Recipe {
   image: string;
   category: string;
   views: number;
+  imageURL: string;
   _createdAt: string;
   author?: {
     _id: string;

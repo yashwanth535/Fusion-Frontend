@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { 
   ChefHat, 
@@ -8,9 +8,6 @@ import {
   BookOpen, 
   Heart,
   Star,
-  Filter,
-  Search,
-  Edit3,
   Share2,
   Trash2
 } from 'lucide-react';

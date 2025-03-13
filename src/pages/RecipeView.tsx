@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ChefHat, Share2, Edit, Save, Clock, Users, Utensils, ArrowLeft, Download } from 'lucide-react';
+import { ChefHat, Share2, Clock, Users, Utensils, Download } from 'lucide-react';
 import TextToSpeechGoogle from '../components/TextToSpeechGoogle';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
