@@ -18,16 +18,16 @@ const Footer = () => {
               Discover, create, and share amazing recipes from around the world.
             </p>
             <div className="flex space-x-4">
-              <a href="#" className="text-white hover:text-primary transition-colors">
+              <a href="https://www.instagram.com/__.charan.__1731" className="text-white hover:text-primary transition-colors">
                 <Instagram className="h-6 w-6" />
               </a>
-              <a href="#" className="text-white hover:text-primary transition-colors">
+              <a href="https://x.com" className="text-white hover:text-primary transition-colors">
                 <Twitter className="h-6 w-6" />
               </a>
-              <a href="#" className="text-white hover:text-primary transition-colors">
+              <a href="https://facebook.com" className="text-white hover:text-primary transition-colors">
                 <Facebook className="h-6 w-6" />
               </a>
-              <a href="#" className="text-white hover:text-primary transition-colors">
+              <a href="https://www.youtube.com" className="text-white hover:text-primary transition-colors">
                 <Youtube className="h-6 w-6" />
               </a>
             </div>
@@ -61,27 +61,27 @@ const Footer = () => {
             <h3 className="text-18-bold mb-4 text-white">Categories</h3>
             <ul className="space-y-3">
               <li>
-                <Link to="/recipes?category=breakfast" className="text-white-100 hover:text-primary transition-colors">
+                <Link to="/recipes" className="text-white-100 hover:text-primary transition-colors">
                   Breakfast
                 </Link>
               </li>
               <li>
-                <Link to="/recipes?category=lunch" className="text-white-100 hover:text-primary transition-colors">
+                <Link to="/recipes" className="text-white-100 hover:text-primary transition-colors">
                   Lunch
                 </Link>
               </li>
               <li>
-                <Link to="/recipes?category=dinner" className="text-white-100 hover:text-primary transition-colors">
+                <Link to="/recipes" className="text-white-100 hover:text-primary transition-colors">
                   Dinner
                 </Link>
               </li>
               <li>
-                <Link to="/recipes?category=dessert" className="text-white-100 hover:text-primary transition-colors">
+                <Link to="/recipes" className="text-white-100 hover:text-primary transition-colors">
                   Dessert
                 </Link>
               </li>
               <li>
-                <Link to="/recipes?category=vegan" className="text-white-100 hover:text-primary transition-colors">
+                <Link to="/recipes" className="text-white-100 hover:text-primary transition-colors">
                   Vegan
                 </Link>
               </li>
@@ -104,8 +104,8 @@ const Footer = () => {
             </div>
             <div className="mt-6 flex items-center gap-2">
               <Mail className="h-5 w-5 text-primary" />
-              <a href="mailto:contact@flavourfusion.com" className="text-white-100 hover:text-primary transition-colors">
-                contact@flavourfusion.com
+              <a href="mailto:charan23114@gmail.com" className="text-white-100 hover:text-primary transition-colors">
+                charan23114@gmail.com
               </a>
             </div>
           </div>

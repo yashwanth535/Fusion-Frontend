@@ -10,6 +10,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Recipes from './pages/Recipes';
 import Pricing from './pages/Pricing';
+import AboutUs from './pages/AboutUs';
+import Privacy from './pages/Privacy';
+import Terms from './pages/Terms';
+import Contact from './pages/Contact';
 import { AuthProvider } from './context/AuthContext';
 import AuthGuard from './components/AuthGuard';
 import RecipeView from './pages/RecipeView';
@@ -39,6 +43,10 @@ function App() {
               <Route path="/sign-up" element={<Register />} />
               <Route path="/recipes" element={<Recipes />} />
               <Route path="/pricing" element={<Pricing />} />
+              <Route path="/about" element={<AboutUs />} />
+              <Route path="/privacy" element={<Privacy />} />
+              <Route path="/terms" element={<Terms />} />
+              <Route path="/contact" element={<Contact />} />
             </Routes>
           </div>
           <Footer />
