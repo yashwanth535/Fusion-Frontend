@@ -218,9 +218,9 @@ const Contact = () => {
                     <div>
                       <h3 className="text-18-bold text-black mb-1">Email Us</h3>
                       <p className="text-16-regular text-black-100 mb-2">For general inquiries:</p>
-                      <a href="mailto:charan23114@gmail.com" className="text-primary hover:underline">contact@flavourfusion.com</a>
+                      <a href="mailto:rohankrishna48@gmail.com" className="text-primary hover:underline">contact@flavourfusion.com</a>
                       <p className="text-16-regular text-black-100 mt-2 mb-2">For support:</p>
-                      <a href="mailto:charan23114@gmail.com" className="text-primary hover:underline">support@flavourfusion.com</a>
+                      <a href="mailto:rohankrishna48@gmail.com" className="text-primary hover:underline">support@flavourfusion.com</a>
                     </div>
                   </div>
                 </div>
