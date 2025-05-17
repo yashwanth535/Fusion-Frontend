@@ -9,7 +9,12 @@ import {
   Heart,
   Star,
   Share2,
-  Trash2
+  Trash2,
+  Mail,
+  MapPin,
+  Calendar,
+  Edit3,
+  Camera
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Recipe, RecipeCardSkeleton } from '../components/RecipeCard';
@@ -21,6 +26,13 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
+  const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [profileData, setProfileData] = useState({
+    bio: 'Passionate food enthusiast and recipe creator. Sharing my culinary adventures and inspiring others to explore the joy of cooking.',
+    location: 'San Francisco, CA',
+    joinedDate: 'January 2024',
+    website: 'https://flavourfusion.com'
+  });
 
   const stats = {
     totalRecipes: recipes.length,
@@ -33,11 +45,10 @@ const Dashboard = () => {
 
   useEffect(() => {
     const token = localStorage.getItem('token');
-      if (!token || !user) {
-        navigate('/sign-in');
-        return;
-      }
-
+    if (!token || !user) {
+      navigate('/sign-in');
+      return;
+    }
 
     const fetchRecipes = async () => {
       try {
@@ -60,7 +71,6 @@ const Dashboard = () => {
   }, [user]);
 
   const handleDelete = async (id: string) => {
-
     const token = localStorage.getItem('token');
     if (!token || !user) {
       navigate('/sign-in');
@@ -79,12 +89,10 @@ const Dashboard = () => {
       if (data.success) {
         setRecipes(recipes.filter((recipe) => recipe._id !== data.data._id));
       }
-      
     } catch (error) {
       console.error("Failed to delete recipe", error);
     }
-
-  }
+  };
 
   const filteredRecipes = recipes.filter(recipe => {
     const matchesSearch = recipe.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -113,20 +121,71 @@ const Dashboard = () => {
       <section className="pink_container mb-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-8">
-            <img
-              src={user.profilePicture}
-              alt={user.name}
-              className="w-48 h-48 rounded-full border-4 border-white shadow-xl"
-            />
+            <div className="relative">
+              <img
+                src={user.profilePicture}
+                alt={user.name}
+                className="w-48 h-48 rounded-full border-4 border-white shadow-xl object-cover"
+              />
+              <button className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors">
+                <Camera className="h-5 w-5 text-primary" />
+              </button>
+            </div>
+            
             <div className="flex-1 text-center md:text-left">
-              <h1 className="text-30-extrabold text-white mb-2">{user.name}</h1>
-              <p className="text-20-medium text-white opacity-90 mb-4">
-                @{user.email.split('@')[0]}
-              </p>
-              <p className="text-16-medium text-white opacity-80 mb-6 max-w-2xl">
-                Passionate food enthusiast and recipe creator. Sharing my culinary adventures
-                and inspiring others to explore the joy of cooking.
-              </p>
+              <div className="flex items-center justify-between mb-4">
+                <div>
+                  <h1 className="text-30-extrabold text-white mb-1">{user.name}</h1>
+                  <p className="text-20-medium text-white opacity-90">
+                    @{user.email.split('@')[0]}
+                  </p>
+                </div>
+                {isEditingProfile ? (
+                  <button
+                    onClick={() => setIsEditingProfile(false)}
+                    className="startup-card_btn !bg-white !text-black hover:!bg-black hover:!text-white"
+                  >
+                    Save Profile
+                  </button>
+                ) : (
+                  <button
+                    onClick={() => setIsEditingProfile(true)}
+                    className="startup-card_btn !bg-white !text-black hover:!bg-black hover:!text-white flex items-center gap-2"
+                  >
+                    <Edit3 className="h-4 w-4" />
+                    Edit Profile
+                  </button>
+                )}
+              </div>
+
+              {isEditingProfile ? (
+                <textarea
+                  value={profileData.bio}
+                  onChange={(e) => setProfileData({ ...profileData, bio: e.target.value })}
+                  className="w-full p-3 rounded-lg border-2 border-white bg-white bg-opacity-10 text-white placeholder-white-100 mb-4"
+                  rows={3}
+                />
+              ) : (
+                <p className="text-16-medium text-white opacity-80 mb-4 max-w-2xl">
+                  {profileData.bio}
+                </p>
+              )}
+
+              <div className="flex flex-wrap gap-6 mb-6 text-white opacity-80">
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4" />
+                  <span>{profileData.location}</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Mail className="h-4 w-4" />
+                  <a href={`mailto:${user.email}`} className="hover:text-white">{user.email}</a>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Calendar className="h-4 w-4" />
+                  <span>Joined {profileData.joinedDate}</span>
+                </div>
+              </div>
+
               <div className="flex flex-wrap gap-4 justify-center md:justify-start">
                 <Link
                   to="/create"
@@ -137,7 +196,7 @@ const Dashboard = () => {
                 </Link>
                 <button className="startup-card_btn !bg-white !text-black hover:!bg-black hover:!text-white flex items-center gap-2">
                   <Settings className="h-4 w-4" />
-                  Edit Profile
+                  Settings
                 </button>
               </div>
             </div>
@@ -147,35 +206,34 @@ const Dashboard = () => {
 
       <section className="max-w-7xl mx-auto px-4 -mt-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <div className="startup-card text-center">
+          <div className="startup-card text-center transform hover:scale-105 transition-transform">
             <BookOpen className="h-8 w-8 text-primary mx-auto mb-2" />
             <p className="text-30-bold">{stats.totalRecipes}</p>
             <p className="text-16-medium text-black-100">Recipes</p>
           </div>
-          <div className="startup-card text-center">
+          <div className="startup-card text-center transform hover:scale-105 transition-transform">
             <Eye className="h-8 w-8 text-primary mx-auto mb-2" />
             <p className="text-30-bold">{stats.totalViews}</p>
             <p className="text-16-medium text-black-100">Total Views</p>
           </div>
-          <div className="startup-card text-center">
+          <div className="startup-card text-center transform hover:scale-105 transition-transform">
             <Heart className="h-8 w-8 text-primary mx-auto mb-2" />
             <p className="text-30-bold">{stats.followers}</p>
             <p className="text-16-medium text-black-100">Followers</p>
           </div>
-          <div className="startup-card text-center">
+          <div className="startup-card text-center transform hover:scale-105 transition-transform">
             <Star className="h-8 w-8 text-primary mx-auto mb-2" />
             <p className="text-30-bold">{stats.avgRating}</p>
             <p className="text-16-medium text-black-100">Avg Rating</p>
           </div>
         </div>
       </section>
-       {/* Recipes Section */}
-       <section className="max-w-7xl mx-auto px-4 py-12">
+
+      <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <h2 className="text-30-bold">Your Recipes</h2>
             
-            {/* Search and Filter */}
             <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
               <div className="relative flex-1 sm:w-64">
                 <input
@@ -185,6 +243,7 @@ const Dashboard = () => {
                   onChange={(e) => setSearchQuery(e.target.value)}
                   className="startup-form_input pl-10"
                 />
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               </div>
               <div className="relative flex-1 sm:w-48">
                 <select
@@ -198,6 +257,7 @@ const Dashboard = () => {
                     </option>
                   ))}
                 </select>
+                <ChefHat className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               </div>
             </div>
           </div>
@@ -219,7 +279,10 @@ const Dashboard = () => {
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-4 right-4 flex gap-2">
-                      <button className="p-2 bg-white rounded-full shadow-md hover:bg-red-500 hover:text-white transition-colors" onClick={() => handleDelete(recipe._id)}>
+                      <button 
+                        className="p-2 bg-white rounded-full shadow-md hover:bg-red-500 hover:text-white transition-colors"
+                        onClick={() => handleDelete(recipe._id)}
+                      >
                         <Trash2 className="h-4 w-4" />
                       </button>
                     </div>
