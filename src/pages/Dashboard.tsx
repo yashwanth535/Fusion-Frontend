@@ -14,7 +14,16 @@ import {
   MapPin,
   Calendar,
   Edit3,
-  Camera
+  Camera,
+  Search,
+  Filter,
+  ArrowUpRight,
+  BarChart2,
+  TrendingUp,
+  Clock,
+  Users,
+  Bookmark,
+  AlertCircle
 } from 'lucide-react';
 import { useAuth } from '../context/AuthContext';
 import { Recipe, RecipeCardSkeleton } from '../components/RecipeCard';
@@ -27,6 +36,8 @@ const Dashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [isEditingProfile, setIsEditingProfile] = useState(false);
+  const [showFilters, setShowFilters] = useState(false);
+  const [sortBy, setSortBy] = useState('newest');
   const [profileData, setProfileData] = useState({
     bio: 'Passionate food enthusiast and recipe creator. Sharing my culinary adventures and inspiring others to explore the joy of cooking.',
     location: 'San Francisco, CA',
@@ -38,7 +49,9 @@ const Dashboard = () => {
     totalRecipes: recipes.length,
     totalViews: recipes.reduce((acc, recipe) => acc + (recipe.views || 0), 0),
     avgRating: 4.5,
-    followers: 128
+    followers: 128,
+    monthlyViews: 2547,
+    trendingRecipes: 3
   };
 
   const categories = ['all', 'dessert', 'main course', 'salad', 'appetizer', 'breakfast'];
@@ -100,31 +113,22 @@ const Dashboard = () => {
     const matchesCategory = selectedCategory === 'all' || 
                           recipe.category.toLowerCase() === selectedCategory;
     return matchesSearch && matchesCategory;
+  }).sort((a, b) => {
+    if (sortBy === 'newest') return new Date(b._createdAt).getTime() - new Date(a._createdAt).getTime();
+    if (sortBy === 'popular') return (b.views || 0) - (a.views || 0);
+    return 0;
   });
-
-  if (!user) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <ChefHat className="h-16 w-16 text-primary mx-auto mb-4" />
-          <p className="text-20-medium mb-4">Please log in to view your dashboard</p>
-          <Link to="/login" className="startup-card_btn inline-flex items-center gap-2">
-            Sign In
-          </Link>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-white-100">
+      {/* Hero Section with Profile */}
       <section className="pink_container mb-20">
         <div className="max-w-7xl mx-auto px-4">
           <div className="flex flex-col md:flex-row items-center gap-8">
             <div className="relative">
               <img
-                src={user.profilePicture}
-                alt={user.name}
+                src={user?.profilePicture || 'https://via.placeholder.com/200'}
+                alt={user?.name}
                 className="w-48 h-48 rounded-full border-4 border-white shadow-xl object-cover"
               />
               <button className="absolute bottom-2 right-2 bg-white p-2 rounded-full shadow-lg hover:bg-gray-100 transition-colors">
@@ -135,9 +139,9 @@ const Dashboard = () => {
             <div className="flex-1 text-center md:text-left">
               <div className="flex items-center justify-between mb-4">
                 <div>
-                  <h1 className="text-30-extrabold text-white mb-1">{user.name}</h1>
+                  <h1 className="text-30-extrabold text-white mb-1">{user?.name}</h1>
                   <p className="text-20-medium text-white opacity-90">
-                    @{user.email.split('@')[0]}
+                    @{user?.email.split('@')[0]}
                   </p>
                 </div>
                 {isEditingProfile ? (
@@ -178,7 +182,7 @@ const Dashboard = () => {
                 </div>
                 <div className="flex items-center gap-2">
                   <Mail className="h-4 w-4" />
-                  <a href={`mailto:${user.email}`} className="hover:text-white">{user.email}</a>
+                  <a href={`mailto:${user?.email}`} className="hover:text-white">{user?.email}</a>
                 </div>
                 <div className="flex items-center gap-2">
                   <Calendar className="h-4 w-4" />
@@ -204,6 +208,7 @@ const Dashboard = () => {
         </div>
       </section>
 
+      {/* Stats Overview */}
       <section className="max-w-7xl mx-auto px-4 -mt-8">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div className="startup-card text-center transform hover:scale-105 transition-transform">
@@ -227,14 +232,46 @@ const Dashboard = () => {
             <p className="text-16-medium text-black-100">Avg Rating</p>
           </div>
         </div>
+
+        {/* Additional Stats */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+          <div className="startup-card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-18-bold">Monthly Views</h3>
+              <TrendingUp className="h-5 w-5 text-green-500" />
+            </div>
+            <p className="text-30-bold text-primary">{stats.monthlyViews}</p>
+            <p className="text-16-medium text-black-100">+12.5% from last month</p>
+          </div>
+          
+          <div className="startup-card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-18-bold">Trending Recipes</h3>
+              <BarChart2 className="h-5 w-5 text-primary" />
+            </div>
+            <p className="text-30-bold text-primary">{stats.trendingRecipes}</p>
+            <p className="text-16-medium text-black-100">Recipes in top 100</p>
+          </div>
+          
+          <div className="startup-card p-6">
+            <div className="flex items-center justify-between mb-4">
+              <h3 className="text-18-bold">Profile Views</h3>
+              <ArrowUpRight className="h-5 w-5 text-green-500" />
+            </div>
+            <p className="text-30-bold text-primary">847</p>
+            <p className="text-16-medium text-black-100">Last 30 days</p>
+          </div>
+        </div>
       </section>
 
+      {/* Recipe Management */}
       <section className="max-w-7xl mx-auto px-4 py-12">
         <div className="flex flex-col gap-6">
           <div className="flex flex-col md:flex-row justify-between items-center gap-4">
             <h2 className="text-30-bold">Your Recipes</h2>
             
             <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
+              {/* Search Bar */}
               <div className="relative flex-1 sm:w-64">
                 <input
                   type="text"
@@ -245,23 +282,50 @@ const Dashboard = () => {
                 />
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
               </div>
-              <div className="relative flex-1 sm:w-48">
-                <select
-                  value={selectedCategory}
-                  onChange={(e) => setSelectedCategory(e.target.value)}
-                  className="startup-form_input pl-10 capitalize"
-                >
-                  {categories.map(category => (
-                    <option key={category} value={category} className="capitalize">
-                      {category}
-                    </option>
-                  ))}
-                </select>
-                <ChefHat className="absolute left-3 top-1/2 transform -translate-y-1/2 h-5 w-5 text-gray-400" />
-              </div>
+
+              {/* Filter Button */}
+              <button
+                onClick={() => setShowFilters(!showFilters)}
+                className="startup-card_btn flex items-center gap-2"
+              >
+                <Filter className="h-4 w-4" />
+                Filters
+              </button>
+
+              {/* Sort Dropdown */}
+              <select
+                value={sortBy}
+                onChange={(e) => setSortBy(e.target.value)}
+                className="startup-form_input"
+              >
+                <option value="newest">Newest First</option>
+                <option value="popular">Most Popular</option>
+              </select>
             </div>
           </div>
 
+          {/* Filter Panel */}
+          {showFilters && (
+            <div className="startup-card p-4">
+              <div className="flex flex-wrap gap-4">
+                {categories.map(category => (
+                  <button
+                    key={category}
+                    onClick={() => setSelectedCategory(category)}
+                    className={`px-4 py-2 rounded-full border-2 transition-colors ${
+                      selectedCategory === category
+                        ? 'border-primary bg-primary-50 text-primary'
+                        : 'border-gray-200 hover:border-primary'
+                    }`}
+                  >
+                    {category.charAt(0).toUpperCase() + category.slice(1)}
+                  </button>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Recipe Grid */}
           {loading ? (
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {[1, 2, 3].map((n) => (
@@ -317,6 +381,7 @@ const Dashboard = () => {
             </div>
           )}
 
+          {/* Empty State */}
           {!loading && filteredRecipes.length === 0 && (
             <div className="text-center py-12">
               <ChefHat className="h-16 w-16 text-primary mx-auto mb-4" />
