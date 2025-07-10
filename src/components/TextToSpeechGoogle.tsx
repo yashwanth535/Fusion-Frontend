@@ -4,6 +4,10 @@ import { Volume2, ChevronDown } from "lucide-react";
 
 const GOOGLE_TTS_API_KEY = import.meta.env.VITE_GOOGLE_TTS_API_KEY;
 
+if(!GOOGLE_TTS_API_KEY) {
+  throw new Error('GOOGLE_TTS_API_KEY is not set');
+}
+
 // Accent and voice options
 const accents = [
   {
