@@ -17,6 +17,7 @@ import Contact from './pages/Contact';
 import { AuthProvider } from './context/AuthContext';
 import AuthGuard from './components/AuthGuard';
 import RecipeView from './pages/RecipeView';
+import BackendCheck from './components/ui/backendCheck'
 
 function App() {
   return (
@@ -47,6 +48,7 @@ function App() {
               <Route path="/privacy" element={<Privacy />} />
               <Route path="/terms" element={<Terms />} />
               <Route path="/contact" element={<Contact />} />
+              <Route path="/backend" element={<BackendCheck/>}/>
             </Routes>
           </div>
           <Footer />
