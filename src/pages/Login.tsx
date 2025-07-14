@@ -176,7 +176,7 @@ const Login = () => {
             <span className="form-divider-text">OR</span>
           </div>
 
-          <div className="flex justify-center">
+          <div className="flex justify-center w-full">
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={() => {
@@ -186,9 +186,10 @@ const Login = () => {
               theme="outline"
               shape="rectangular"
               text="continue_with"
-              width="100%"
+              width={300} // ✅ Set a number, like 300
             />
           </div>
+
 
           <div className="mt-8 text-center">
             <p className="text-16-medium text-black-100">

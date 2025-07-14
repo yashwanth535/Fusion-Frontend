@@ -152,6 +152,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         credentials: 'include',
         body: JSON.stringify({ credential }),
       });
+      console.log("called the backend");
 
       const data = await response.json();
       console.log('Google sign in response:', data);
