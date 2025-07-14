@@ -18,7 +18,7 @@ const Footer = () => {
               Discover, create, and share amazing recipes from around the world.
             </p>
             <div className="flex space-x-4">
-              <a href="https://www.instagram.com/__.charan.__1731" className="text-white hover:text-primary transition-colors">
+              <a href="https://www.instagram.com/" className="text-white hover:text-primary transition-colors">
                 <Instagram className="h-6 w-6" />
               </a>
               <a href="https://x.com" className="text-white hover:text-primary transition-colors">
@@ -105,7 +105,7 @@ const Footer = () => {
             <div className="mt-6 flex items-center gap-2">
               <Mail className="h-5 w-5 text-primary" />
               <a href="mailto:charan23114@gmail.com" className="text-white-100 hover:text-primary transition-colors">
-                charan23114@gmail.com
+                yashwanthmunikuntla@gmail.com
               </a>
             </div>
           </div>

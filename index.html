@@ -2,10 +2,75 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/logo.png" />
+    <title>Flavour Fusion - AI Recipe Generator & Food Companion | Created by Yashwanth Munikuntla</title>
+    <meta name="robots" content="index, follow" />
+    <link rel="icon" type="image/png" href="/logo.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Flavour Fusion</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Flavour Fusion is your AI-powered food assistant, helping you discover delicious recipes and cooking ideas tailored to your ingredients and preferences. Created by Yashwanth Munikuntla." />
+    <meta name="keywords" content="Flavour Fusion, AI Recipe Generator, Food Assistant, Cooking App, Yashwanth Munikuntla, Developer Projects, Recipe App" />
+    <meta name="author" content="Yashwanth Munikuntla" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:title" content="Flavour Fusion - AI Recipe Generator" />
+    <meta property="og:description" content="Discover personalized recipes and AI-powered cooking help with Flavour Fusion, built by Yashwanth Munikuntla." />
+    <meta property="og:image" content="https://fusion.yashwanth.site/preview-image.png" />
+    <meta property="og:url" content="https://fusion.yashwanth.site" />
+    <meta property="og:type" content="website" />
+
+    <!-- Razorpay Script -->
     <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- Google Identity Services (optional if used) -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "Flavour Fusion",
+      "url": "https://fusion.yashwanth.site",
+      "description": "Flavour Fusion is an AI-powered recipe generator and cooking assistant. Created by Yashwanth Munikuntla.",
+      "creator": {
+        "@type": "Person",
+        "name": "Yashwanth Munikuntla"
+      },
+      "applicationCategory": "LifestyleApplication",
+      "operatingSystem": "All",
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "INR"
+      },
+      "keywords": [
+        "AI recipe generator",
+        "food assistant",
+        "Flavour Fusion",
+        "recipe ideas",
+        "yashwanth munikuntla",
+        "yashwanth535",
+        "yashwanth 535",
+        "fusion",
+        "ai recipe generator",
+        "blog"
+      ]
+    }
+    </script>
+
+    <!-- Theme Detection Script -->
+    <script>
+      (function () {
+        const savedTheme = localStorage.getItem('theme');
+        if (
+          savedTheme === 'dark' ||
+          (!savedTheme && window.matchMedia('(prefers-color-scheme: dark)').matches)
+        ) {
+          document.documentElement.classList.add('dark');
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>
