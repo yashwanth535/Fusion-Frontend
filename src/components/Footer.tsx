@@ -127,6 +127,9 @@ const Footer = () => {
             <Link to="/contact" className="text-white-100 text-sm hover:text-primary transition-colors">
               Contact Us
             </Link>
+            <Link to="/refund" className="text-white-100 text-sm hover:text-primary transition-colors">
+              Refund Policy
+            </Link>
           </div>
           <div className="mt-4 md:mt-0 flex items-center gap-1 text-white-100 text-sm">
             <span>Made with</span>

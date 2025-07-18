@@ -35,8 +35,8 @@ const Pricing = () => {
       name: 'Pro',
       description: 'For serious home cooks and food bloggers',
       price: {
-        monthly: 9.99,
-        annually: 7.99
+        monthly: 799,
+        annually: 649
       },
       features: [
         'Unlimited recipe creation',
@@ -58,8 +58,8 @@ const Pricing = () => {
       name: 'Chef',
       description: 'For professional chefs and culinary businesses',
       price: {
-        monthly: 19.99,
-        annually: 16.99
+        monthly: 1599,
+        annually: 1349
       },
       features: [
         'Unlimited recipe creation',
@@ -134,7 +134,7 @@ const Pricing = () => {
               <div className="mb-8">
                 <div className="flex items-end">
                   <span className="text-30-bold">
-                    ${isAnnual ? plan.price.annually : plan.price.monthly}
+                    ₹{isAnnual ? plan.price.annually : plan.price.monthly}
                   </span>
                   <span className="text-16-medium text-black-100 ml-2 mb-1">
                     / month
@@ -142,7 +142,7 @@ const Pricing = () => {
                 </div>
                 {isAnnual && plan.price.annually > 0 && (
                   <p className="text-sm text-primary-600 font-medium mt-1">
-                    Billed annually (${(plan.price.annually * 12).toFixed(2)}/year)
+                    Billed annually (₹{(plan.price.annually * 12).toLocaleString('en-IN')}/year)
                   </p>
                 )}
               </div>
@@ -202,7 +202,7 @@ const Pricing = () => {
             <div className="faq-item">
               <h3 className="text-20-medium mb-2">What payment methods do you accept?</h3>
               <p className="text-16-medium text-black-100">
-                We accept all major credit cards, PayPal, and Apple Pay. All payments are processed securely through Stripe.
+                We accept all major credit cards, debit cards, UPI, and net banking. All payments are processed securely through trusted Indian payment gateways.
               </p>
             </div>
             

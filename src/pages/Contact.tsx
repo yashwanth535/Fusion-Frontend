@@ -218,9 +218,9 @@ const Contact = () => {
                     <div>
                       <h3 className="text-18-bold text-black mb-1">Email Us</h3>
                       <p className="text-16-regular text-black-100 mb-2">For general inquiries:</p>
-                      <a href="mailto:charan23114@gmail.com" className="text-primary hover:underline">contact@flavourfusion.com</a>
+                      <a href="mailto:yashwanthmunikuntla@gmail.com" className="text-primary hover:underline">yashwanthmunikuntla@gmail.com</a>
                       <p className="text-16-regular text-black-100 mt-2 mb-2">For support:</p>
-                      <a href="mailto:charan23114@gmail.com" className="text-primary hover:underline">support@flavourfusion.com</a>
+                      <a href="mailto:yashwanthmunikuntla@gmail.com" className="text-primary hover:underline">yashwanthmunikuntla@gmail.com</a>
                     </div>
                   </div>
                 </div>
@@ -233,7 +233,7 @@ const Contact = () => {
                     <div>
                       <h3 className="text-18-bold text-black mb-1">Call Us</h3>
                       <p className="text-16-regular text-black-100 mb-2">Customer Service:</p>
-                      <p className="text-primary text-18-bold">+91 1234567890</p>
+                      <p className="text-primary text-18-bold">+91 9966990206</p>
                       <p className="text-16-regular text-black-100 mt-2 mb-2">Business Hours:</p>
                       <p className="text-16-regular text-black-100">Monday - Friday: 9am - 5pm EST</p>
                     </div>
@@ -249,8 +249,6 @@ const Contact = () => {
                       <h3 className="text-18-bold text-black mb-1">Visit Us</h3>
                       <p className="text-16-regular text-black-100 mb-2">Headquarters:</p>
                       <p className="text-16-regular text-black-100">
-                        123 Culinary Avenue<br />
-                        Suite 456<br />
                         Hyderabad, HYD 789<br />
                         India
                       </p>
